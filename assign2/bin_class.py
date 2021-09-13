@@ -1,8 +1,9 @@
-from re import X
 import seaborn as sb
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+from tensorflow._api.v2 import data
+from tensorflow.python.ops.map_fn import map_fn
 
 # ---- Global Variables ----
 NUM_SAMPLES = 500
@@ -43,27 +44,41 @@ class Layer(object):
     """
 
     def __init__(self, id, width, X_in):
-        num_features, num_samples = X_in.shape
+        self.width = width
         self.X = X_in
+        self.num_input_neurons, num_samples, num_features = self.X.shape
         self.W = tf.Variable(
-            tf.random.normal(shape=[num_samples, num_features]),
+            tf.random.normal(shape=[width, num_samples]),
             name=("WEIGHTS_" + str(id)),
+            dtype=np.float32,
         )
-        self.B = tf.Variable(tf.zeros(shape=[width, num_features]), name=("BIASES_" + str(id)))
-        print(tf.shape(self.W))
-        print(tf.shape(self.X))
-        print(tf.shape(self.B))
-        exit(1)
+        self.B = tf.Variable(
+            tf.zeros(shape=[width, num_features]),
+            name=("BIASES_" + str(id)),
+            dtype=np.float32,
+        )
 
-    def ReLU(self, z):
-        if z > 0: 
-            return z
-        else:
-            return 0
+    def _sigmoid(self, z):
+        return 1 / (1 + np.math.exp(-1 * z))
 
     def _output(self):
-        Z = self.W @ self.X + self.B
-        return tf.vectorized_map(self.ReLU, Z.reshape(Z, shape=[Z.size]))
+        Z = [
+                tf.squeeze(
+                    (tf.linalg.matvec(tf.transpose(self.X[i]), self.W) + self.B)
+                )
+                for i in range(0, self.num_input_neurons)
+            ]
+        Z = tf.stack(
+            [
+                tf.map_fn(
+                    self._sigmoid,
+                    Z[i][j],
+                )
+                for i in range(0, self.num_input_neurons)
+                for j in range(0, self.width)
+            ]
+        )
+        return Z
 
 
 def main():
@@ -84,7 +99,9 @@ def main():
         ),
     )
 
-    input_data = np.concatenate([dataset[0].spiral.data, dataset[1].spiral.data], axis=1)
+    spiral_A = list(zip(dataset[0].spiral.data[0], dataset[0].spiral.data[1]))
+    spiral_B = list(zip(dataset[1].spiral.data[0], dataset[1].spiral.data[1]))
+    input_data = tf.constant([spiral_A, spiral_B], dtype=np.float32)
     layer_00 = Layer(0, 3, input_data)
     print(layer_00._output())
 
