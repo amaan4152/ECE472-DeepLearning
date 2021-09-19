@@ -1,16 +1,19 @@
-import seaborn as sb
+"""
+Amaan Rahman
+ECE 472: Deep Learning
+Assigment 2: Binary Classification
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from tqdm import trange
 
 # ---- Global Variables ----
-NUM_SAMPLES = 200
-BATCH_SIZE = 16
-NUM_ITR = 100
-LEARNING_RATE = 0.1
+NUM_SAMPLES = 500
+BATCH_SIZE = 32
+NUM_ITR = 2000
 SEED = 1618
-ALPHA = 0.05  # for leaky ReLU
 SIGMA_NOISE = 0.1
 ROT_NUM = 2
 
@@ -33,19 +36,21 @@ class Data(object):
         self.spiral = spiral._data((self.x, self.y, [id] * num_samples))
 
     def _init_input(self, data):
-        self.input_data = tf.constant(data, dtype=np.float32)
+        self.data = tf.constant(data[0 : data.shape[0] - 1], dtype=np.float32)
+        self.labels = tf.constant(
+            data[data.shape[0] - 1], shape=[1, data.shape[1]], dtype=np.float32
+        )
 
     def _batchGet(self, batch_size):
         self.index = NUM_SAMPLES * 2
         rand_ind = np.random.choice(self.index, size=batch_size)
-        dat = tf.squeeze(tf.gather(self.input_data, rand_ind, axis=0))
-        in_dat = tf.gather(dat, range(0, dat.shape[1] - 1), axis=1)
-        in_labels = tf.gather(dat, dat.shape[1] - 1, axis=1)
+        batch_data = tf.squeeze(tf.gather(self.data, rand_ind, axis=1))
+        batch_labels = tf.squeeze(tf.gather(self.labels, rand_ind, axis=1))
 
         # normalize data
         return (
-            (in_dat - tf.reduce_mean(in_dat)) / (tf.math.reduce_std(in_dat) ** 2),
-            in_labels,
+            batch_data,
+            batch_labels,
         )
 
     # https://en.wikipedia.org/wiki/Archimedean_spiral
@@ -58,157 +63,67 @@ class Data(object):
             return self
 
 
-class Layer(tf.Module):
-    """
-    width -> number of neurons in layer
-    X_in -> input data to layer
-    """
-
-    def __init__(self, id, depth, width_arr, X):
-        self.id = id
-        self.X = X
-        self.depth = depth
-        self.width_arr = width_arr
-        self.width = width
-        self.activation_func = {
-            "SIGMOID": self._sigmoid,
-            "LRELU": self._leaky_ReLU,
-            "RELU": self._ReLU,
-        }
-        num_features, num_samples = self.X.shape
-        self.W = []
-        self.B = []
-        for width in width_arr:
-            self.W.append(tf.Variable(
-                0.1*tf.random.normal(shape=[num_features, width]),
-                name=("WEIGHTS_" + str(self.id)),
+class MLP(tf.Module):
+    def __init__(self, X_features, depth, width_arr):
+        self.W = [None] * depth
+        self.B = [None] * depth
+        for width, k in zip(width_arr, range(1, depth + 1)):
+            self.W[k - 1] = tf.Variable(
+                0.2 * tf.random.normal(shape=[X_features, width]),
+                name=("WEIGHTS_" + str(k)),
                 dtype=np.float32,
-            ))
-            self.B.append(tf.Variable(
-                tf.constant(0.01, shape=[width, 1]),
-                name=("BETA_" + str(self.id)),
+            )
+            self.B[k - 1] = tf.Variable(
+                0.001 * tf.ones(shape=[width, 1]),
+                name=("BIAS_" + str(k)),
                 dtype=np.float32,
-            ))
+            )
 
-            num_features = width
+            X_features = width
 
-    def _sigmoid(self, z):
-        z = np.clip(
-            z, -500, 500
-        )  # https://stackoverflow.com/questions/23128401/overflow-error-in-neural-networks-implementation
-        return 1 / (1 + np.math.exp(-1 * z))
-
-    def _ReLU(self, z):
-        return max(0, z)
-
-    def _leaky_ReLU(self, z):
-        return max(ALPHA * z, z)
-
-    def _batchNorm(self, input):
-        mu = tf.reduce_mean(input)
-        std = tf.math.reduce_std(input)
-        return (input - mu) / (std ** 2)
-
-    def _input(self, in_dat):
-        self.X = in_dat
-        self.num_features, self.num_samples = self.X.shape
-        self.GAMMA = tf.Variable(
-            tf.random.normal(shape=[self.width, 1]),
-            name=("GAMMA_" + str(self.id)),
-            dtype=np.float32,
-        )
-        self.W = tf.Variable(
-            tf.random.normal(shape=[self.num_features, self.width]),
-            name=("WEIGHTS_" + str(self.id)),
-            dtype=np.float32,
-        )
-
-        self.BETA = tf.Variable(
-            tf.constant(0.01, shape=[self.width, 1]),
-            name=("BETA_" + str(self.id)),
-            dtype=np.float32,
-        )
-
-    def __call__(self, func):  # output from current layer
-        self.Z = tf.squeeze((tf.transpose(self.W) @ self.X))
-        self.Z = tf.squeeze(self.GAMMA * self._batchNorm(self.Z) + self.BETA)
-        dims = self.Z.shape
-        self.Z = tf.map_fn(
-            self.activation_func[func], tf.reshape(self.Z, shape=[tf.size(self.Z)])
-        )
-        return tf.squeeze(tf.reshape(self.Z, shape=dims))
+    def __call__(self, X):  # output from current layer
+        X_k = X
+        for W_k, B_k in zip(self.W, self.B):
+            func = tf.nn.relu if W_k.shape[1] != 1 else tf.nn.sigmoid
+            self.Z = tf.squeeze(func(((tf.transpose(W_k) @ X_k) + B_k)))
+            X_k = tf.squeeze(self.Z)
+        return self.Z  # output is the predicted probabilities for input batch
 
 
-class MLP(object):
-    def __init__(self, data, depth=1, width_array=[1]):
-        self.depth = depth
-        self.width_array = width_array
-        self.data = data
-        self.NN = []
+def train(data, model):
+    optimizer = tf.optimizers.Adam()
+    bar = trange(NUM_ITR)
+    loss_dat = [0] * NUM_ITR
+    for i in bar:
+        with tf.GradientTape() as tape:
+            X, y_true = data._batchGet(BATCH_SIZE)
+            y_hat = model(X)
+            loss_dat[i] = tf.losses.binary_crossentropy(y_true, y_hat)
 
-        # initialize multiperceptron model
-        for l in range(0, self.depth):
-            layer = Layer(l, self.width_array[l])
-            self.NN.append(layer)
+        grads = tape.gradient(loss_dat[i], model.trainable_variables)
+        optimizer.apply_gradients(zip(grads, model.trainable_variables))
+        bar.set_description(f"Loss @ {i} => {loss_dat[i].numpy():0.6f}")
+        bar.refresh()
 
-        output_layer = Layer(-1, 1)
-        self.NN.append(output_layer)  # output layer
-
-    def _loss_BCE(self, y):
-        return (tf.reduce_mean(
-            (-1* y * tf.math.log(self.probs)) - ((1 - y) * tf.math.log(1 - self.probs))
-        ))
-
-    def _train(self):
-        optimizer = tf.optimizers.Adam()
-        bar = trange(NUM_ITR)
-        self.loss_dat = []
-        extract_vars = True
-        for itr in bar:
-            self.train_vars = ()
-            X, X_labels = self.data._batchGet(BATCH_SIZE)
-            X = tf.transpose(X)
-            with tf.GradientTape() as tape:
-                for layer in self.NN:
-                    layer._input(X)
-                    self.train_vars += layer.trainable_variables
-                    if layer.id == -1:  # for output layer
-                        self.probs = layer("SIGMOID")
-                    else:
-                        X = layer("LRELU")
-
-                
-                loss = self._loss_BCE(X_labels)
-                self.loss_dat.append(loss)
-
-            grads = tape.gradient(loss, self.train_vars)
-            optimizer.apply_gradients(zip(grads, self.train_vars))
-
-            bar.set_description(f"Loss @ {itr} => {loss.numpy():0.6f}")
-            bar.refresh()
-
-    def _classify(self):
-        layer_input = tf.gather(
-            self.data.input_data, range(0, self.data.input_data.shape[1]), axis=1
-        )
-        for layer in self.NN:
-            layer._input(layer_input)
-            if layer.id == -1:
-                probs = layer("SIGMOID")
-            else:
-                layer_input = layer("LRELU")
-
-        return probs
-
-    # https://machinelearningmastery.com/plot-a-decision-surface-for-machine-learning/
-    def _decision_plot(self):
-        features = tf.gather(self.data.input_data, [0, 1], axis=1).numpy()
-        min1, max1 = features[:][0].min() - 1, features[:][0].max() + 1
-        min2, max2 = features[:][1].min() - 1, features[:][1].max() + 1
-        print(features[0])
+    return loss_dat
 
 
-# create a more generalized data object that takes in spiral objects rather than
+# https://machinelearningmastery.com/plot-a-decision-surface-for-machine-learning/
+def decision_surf(data, model):
+    min1, max1 = data[0, :].min() - 1, data[0, :].max() + 1
+    min2, max2 = data[1, :].min() - 1, data[1, :].max() + 1
+
+    x1grid = np.arange(min1, max1, 0.1)
+    x2grid = np.arange(min2, max2, 0.1)
+    X, Y = np.meshgrid(x1grid, x2grid)
+    r1, r2 = X.flatten(), Y.flatten()
+    r1, r2 = r1.reshape((1, len(r1))), r2.reshape((1, len(r2)))
+    G = np.vstack((r1, r2))
+    Z = tf.reshape(model(G), shape=X.shape)
+    return (X, Y, Z)
+
+
+# very messy data object setup :/
 # generating 2 seperate data objects
 def main():
     np.random.seed(SEED)
@@ -243,13 +158,27 @@ def main():
         )
     )
     input_data = np.concatenate((spiral_A, spiral_B), axis=0)
-    dataset[0]._init_input(input_data)
-    mlp_model = MLP(dataset[0], 5, [32, 32, 16, 8, 4])
-    mlp_model._train()
-    mlp_model._classify()
+    dataset[0]._init_input(input_data.T)
+    mlp_model = MLP(dataset[0].data.shape[0], 8, [100, 75, 50, 25, 50, 75, 100, 1])
+    train(dataset[0], mlp_model)
+    prob_surf = decision_surf(dataset[0].data.numpy(), mlp_model)
 
-    plt.plot(mlp_model.loss_dat)
-    plt.savefig("Loss_GRAPH.pdf")
+    # https://stackoverflow.com/questions/49991227/pandas-matplotlib-plot-a-bar-graph-on-existing-scatter-plot-or-vice-versa
+    fig = plt.figure(figsize=(5, 3), dpi=200)
+    ax = fig.add_subplot(111)
+    ax.contour(*prob_surf, cmap="RdPu", linestyles="solid", levels=1)
+    ax.scatter(
+        input_data[0:NUM_SAMPLES, 0],
+        input_data[0:NUM_SAMPLES, 1],
+        c="r",
+        edgecolors="k",
+    )
+    ax.scatter(
+        input_data[NUM_SAMPLES:, 0], input_data[NUM_SAMPLES:, 1], c="b", edgecolors="k"
+    )
+    ax.set_title("Spirals Dataset & Classification Boundary")
+    ax.set(xlabel="x-values", ylabel="y-values")
+    plt.savefig("output1.pdf")
 
 
 if __name__ == "__main__":
