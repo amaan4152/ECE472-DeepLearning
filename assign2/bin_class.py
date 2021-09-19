@@ -5,12 +5,12 @@ import tensorflow as tf
 from tqdm import trange
 
 # ---- Global Variables ----
-NUM_SAMPLES = 10000
+NUM_SAMPLES = 200
 BATCH_SIZE = 16
-NUM_ITR = 1000
-LEARNING_RATE = 0.2
+NUM_ITR = 100
+LEARNING_RATE = 0.1
 SEED = 1618
-ALPHA = 0.01  # for leaky ReLU
+ALPHA = 0.05  # for leaky ReLU
 SIGMA_NOISE = 0.1
 ROT_NUM = 2
 
@@ -64,9 +64,33 @@ class Layer(tf.Module):
     X_in -> input data to layer
     """
 
-    def __init__(self, id, width):
+    def __init__(self, id, depth, width_arr, X):
         self.id = id
+        self.X = X
+        self.depth = depth
+        self.width_arr = width_arr
         self.width = width
+        self.activation_func = {
+            "SIGMOID": self._sigmoid,
+            "LRELU": self._leaky_ReLU,
+            "RELU": self._ReLU,
+        }
+        num_features, num_samples = self.X.shape
+        self.W = []
+        self.B = []
+        for width in width_arr:
+            self.W.append(tf.Variable(
+                0.1*tf.random.normal(shape=[num_features, width]),
+                name=("WEIGHTS_" + str(self.id)),
+                dtype=np.float32,
+            ))
+            self.B.append(tf.Variable(
+                tf.constant(0.01, shape=[width, 1]),
+                name=("BETA_" + str(self.id)),
+                dtype=np.float32,
+            ))
+
+            num_features = width
 
     def _sigmoid(self, z):
         z = np.clip(
@@ -83,7 +107,7 @@ class Layer(tf.Module):
     def _batchNorm(self, input):
         mu = tf.reduce_mean(input)
         std = tf.math.reduce_std(input)
-        return (input - mu) / std ** 2
+        return (input - mu) / (std ** 2)
 
     def _input(self, in_dat):
         self.X = in_dat
@@ -100,15 +124,10 @@ class Layer(tf.Module):
         )
 
         self.BETA = tf.Variable(
-            tf.zeros(shape=[self.width, 1]),
+            tf.constant(0.01, shape=[self.width, 1]),
             name=("BETA_" + str(self.id)),
             dtype=np.float32,
         )
-        self.activation_func = {
-            "SIGMOID": self._sigmoid,
-            "LRELU": self._leaky_ReLU,
-            "RELU": self._ReLU,
-        }
 
     def __call__(self, func):  # output from current layer
         self.Z = tf.squeeze((tf.transpose(self.W) @ self.X))
@@ -127,37 +146,43 @@ class MLP(object):
         self.data = data
         self.NN = []
 
-        self.train_vars = []
         # initialize multiperceptron model
         for l in range(0, self.depth):
             layer = Layer(l, self.width_array[l])
             self.NN.append(layer)
-            self.train_vars.append(layer.trainable_variables)
-        self.NN.append(Layer(-1, 1))  # output layer
 
-    def _loss_BCE(self, y, N):
-        return tf.reduce_sum(
-            y * tf.math.log(self.probs) + (1 - y) * tf.math.log(1 - self.probs)
-        ) / (-1 * N)
+        output_layer = Layer(-1, 1)
+        self.NN.append(output_layer)  # output layer
+
+    def _loss_BCE(self, y):
+        return (tf.reduce_mean(
+            (-1* y * tf.math.log(self.probs)) - ((1 - y) * tf.math.log(1 - self.probs))
+        ))
 
     def _train(self):
-        optimizer = tf.optimizers.SGD(learning_rate=LEARNING_RATE, momentum=0.99)
+        optimizer = tf.optimizers.Adam()
         bar = trange(NUM_ITR)
+        self.loss_dat = []
+        extract_vars = True
         for itr in bar:
+            self.train_vars = ()
             X, X_labels = self.data._batchGet(BATCH_SIZE)
             X = tf.transpose(X)
             with tf.GradientTape() as tape:
                 for layer in self.NN:
                     layer._input(X)
+                    self.train_vars += layer.trainable_variables
                     if layer.id == -1:  # for output layer
                         self.probs = layer("SIGMOID")
                     else:
-                        X = layer("RELU")
+                        X = layer("LRELU")
 
-                loss = self._loss_BCE(X_labels, X_labels.shape[0])
-            for vars in self.train_vars[-1:]:
-                grads = tape.gradient(loss, vars)
-                optimizer.apply_gradients(zip(grads, vars))
+                
+                loss = self._loss_BCE(X_labels)
+                self.loss_dat.append(loss)
+
+            grads = tape.gradient(loss, self.train_vars)
+            optimizer.apply_gradients(zip(grads, self.train_vars))
 
             bar.set_description(f"Loss @ {itr} => {loss.numpy():0.6f}")
             bar.refresh()
@@ -171,7 +196,7 @@ class MLP(object):
             if layer.id == -1:
                 probs = layer("SIGMOID")
             else:
-                layer_input = layer("RELU")
+                layer_input = layer("LRELU")
 
         return probs
 
@@ -222,6 +247,9 @@ def main():
     mlp_model = MLP(dataset[0], 5, [32, 32, 16, 8, 4])
     mlp_model._train()
     mlp_model._classify()
+
+    plt.plot(mlp_model.loss_dat)
+    plt.savefig("Loss_GRAPH.pdf")
 
 
 if __name__ == "__main__":
