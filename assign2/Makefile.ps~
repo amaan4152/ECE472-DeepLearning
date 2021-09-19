@@ -2,7 +2,7 @@
 %%Title: Makefile
 %%For: root
 %%Creator: a2ps version 4.14
-%%CreationDate: Sun Sep 19 05:57:56 2021
+%%CreationDate: Sun Sep 19 06:09:44 2021
 %%BoundingBox: 24 24 571 818
 %%DocumentData: Clean7Bit
 %%Orientation: Landscape
@@ -773,19 +773,17 @@ x0 y0 moveto
 () N
 (pdf) L
 (: ) p n
-() S 8 T (a2ps bin_class.py \342M-^HM-^Ro bin_class.ps \342M-^HM-^R\342M-^HM-^Rpro=color) N
-() S 8 T (a2ps Makefile \342M-^HM-^Ro Makefile.ps \342M-^HM-^R\342M-^HM-^Rpro=color) N
-() S 8 T (a2ps README.txt \342M-^HM-^Ro README.ps \342M-^HM-^R\342M-^HM-^Rpro=color) N
+() S 8 T (a2ps bin_class.py -o bin_class.ps --pro=color) N
+() S 8 T (a2ps Makefile -o Makefile.ps --pro=color) N
+() S 8 T (a2ps README.txt -o README.ps --pro=color) N
 () S 8 T (ps2pdf bin_class.ps) N
 () S 8 T (ps2pdf Makefile.ps) N
 () S 8 T (ps2pdf README.ps) N
-() S 8 T (gs \342M-^HM-^RdBATCH \342M-^HM-^RdNOPAUSE \342M-^HM-^Rq \342M-^HM-^RsDEVICE=pdfwrit) N
-(e \\) N
-() S 8 T () S 16 T (\342M-^HM-^RsOutputFile=classif_AR.pdf \\) N
-() S 8 T () S 16 T (README.pdf bin_class.pdf output.pdf Makefile.pdf) N
+() S 8 T (gs -dBATCH -dNOPAUSE \342M-^HM-^Rq -sDEVICE=pdfwrite -sOutputFile=classif_A) N
+(R.pdf README.pdf bin_class.pdf output.pdf Makefile.pdf) N
 () N
 () S 8 T () S
-(Makefile) (Page 1/1) (Sep 19, 21 5:56) title
+(Makefile) (Page 1/1) (Sep 19, 21 6:09) title
 border
 grestore
 (Printed by root) rhead

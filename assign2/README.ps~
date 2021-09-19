@@ -1,12 +1,12 @@
 %!PS-Adobe-3.0
-%%Title: bin_class.py
+%%Title: README.txt
 %%For: root
 %%Creator: a2ps version 4.14
-%%CreationDate: Sun Sep 19 05:57:33 2021
+%%CreationDate: Sun Sep 19 06:09:44 2021
 %%BoundingBox: 24 24 571 818
 %%DocumentData: Clean7Bit
 %%Orientation: Landscape
-%%Pages: 2
+%%Pages: 1
 %%PageOrder: Ascend
 %%DocumentMedia: A4 595 842 0 () ()
 %%DocumentNeededResources: font Courier
@@ -765,354 +765,137 @@ llx lly 12 add translate
 /x0 x v get 3.362408 add sx cw mul add store
 /y0 y v get bfs th add sub store
 x0 y0 moveto
-(""") p n
-(Amaan Rahman) str n
+(Amaan Rahman) p n
 (ECE 472: Deep Learning) N
-(Assigment 2: Binary Classification) N
-(""") p n
+(Professor Curro) N
 () N
-(import) K
-( matplotlib.pyplot as plt) p n
-(import) K
-( numpy as np) p n
-(import) K
-( tensorflow as tf) p n
-(from) K
-( tqdm ) p
-(import) K
-( trange) p n
+(                                Assignment 2) N
+(                            Binary Classification) N
 () N
-(# ---- Global Variables ----) c n
-(NUM_SAMPLES = 500) p n
-(BATCH_SIZE = 32) N
-(NUM_ITR = 2000) N
-(SEED = 1618) N
-(SIGMA_NOISE = 0.1) N
-(ROT_NUM = 2) N
+(Remarks: ) N
 () N
-(# class for generating data) c n
-(class) K
-( Data\(object\):) p n
-(    ) S
-(def) K
-( __init__\(self, num_samples, sigma, id, attr\):) p n
+(    Attempts to implement ReLU, Leaky-ReLU, and Sigmoid activation functions) N
+(    were made and unsuccessful; the functions themselves have been fully and ) N
+(    properly implemented, however an unecessary amount time was wasted on ) N
+(    integrating the "handmade" activation functions into Tensorflow. The ) N
+(    realization that "handmade" activation functions require integration ) N
+(    was realizing that this very reason of no integration was causing my ) N
+(    model to be unable to train due to failure of gradient computation. ) N
+(    The quick solution that has been used instead was to utilize the built) N
+(    in functions instead.) N
 () N
-(        ) S
-(# spiral attributes) c n
-(        theta = np.random.uniform\(attr[") p
-(min) str
-("], attr[") p
-(max) str
-("], size=\(num_samples\)\)) p n
-(        spiral = self.Spiral\(attr[") S
-(center) str
-("], attr[") p
-(gap) str
-("], theta, 1\)) p n
+(MultiPerceptron Design Considerations: ) N
+(    ) N
+(    One thing to note is that I don't include the input layer within my ) N
+(    discussion of design considerations \(only hidden layers and output layer\).) N
 () N
-(        ) S
-(# generate data) c n
-(        factor = 1 ) p
-(if) K
-( id == 1 ) p
-(else) K
-( -1) p n
-(        noise = sigma * np.random.normal\(size=\(num_samples\)\)  ) S
-(# gaussian noise) c n
-(        self.x = \() p n
-(            factor * spiral.r * np.cos\(theta\) / 1.5 + noise) N
-(        \)  ) S
-(# arbitrary scaling factor) c n
-(        self.y = factor * spiral.r * np.sin\(theta\) + noise) p n
+(    Initially, I decided on testing 8->4->2->1 setup, however my loss didn't con) N
+(verge.) N
+(    I ramped the widths up by about times 4, and it didn't converge. I then ramp) N
+(ed the ) N
+(    widths by 10 fold about and then I noticed convergence over 1500 iterations ) N
+(given ) N
+(    a batch size of 32. This "funnel" design yielded losses to as low as 0.003 o) N
+(r possibly) N
+(    even lower. I tested out my final design, which is the "hourglass" configrua) N
+(tion: ) N
+(    ) N
+(    100->75->50->25->50->75->100->1) N
 () N
-(        self.spiral = spiral._data\(\(self.x, self.y, [id] * num_samples\)\)) N
+(    This design yielded optimal convergence compared to all permutations I have ) N
+(tested out ) N
+(    thus far, yielding losses as low as 0.000002. ) N
 () N
-(    ) S
-(def) K
-( _init_input\(self, data\):) p n
-(        self.data = tf.constant\(data[0 : data.shape[0] - 1], dtype=np.float32\)) N
-(        self.labels = tf.constant\() N
-(            data[data.shape[0] - 1], shape=[1, data.shape[1]], dtype=np.float32) N
-(        \)) N
+(Citations: ) N
 () N
-(    ) S
-(def) K
-( _batchGet\(self, batch_size\):) p n
-(        self.index = NUM_SAMPLES * 2) N
-(        rand_ind = np.random.choice\(self.index, size=batch_size\)) N
-(        batch_data = tf.squeeze\(tf.gather\(self.data, rand_ind, axis=1\)\)) N
-(        batch_labels = tf.squeeze\(tf.gather\(self.labels, rand_ind, axis=1\)\)) N
+(Training function reference from Professor Curro's example) N
 () N
-(        ) S
-(# normalize data) c n
-(        ) p
-(return) K
-( \() p n
-(            batch_data,) N
-(            batch_labels,) N
-(        \)) N
-() N
-(    ) S
-(# https://en.wikipedia.org/wiki/Archimedean_spiral) c n
-(    ) p
-(class) K
-( Spiral\(object\):) p n
-(        ) S
-(def) K
-( __init__\(self, a, b, theta, n\):) p n
-(            self.r = a + b * \(theta ** \(1 / n\)\)) N
-() N
-(        ) S
-(def) K
-( _data\(self, xy_dat\):) p n
-(            self.data = xy_dat) N
-(bin_class.py) (Page 1/4) (Sep 19, 21 5:47) title
+(@misc{brownlee_plot_2020,) N
+(    title = {Plot a {Decision} {Surface} for {Machine} {Learning} {Algorithms} i) N
+(n {Python}},) N
+(    url = {https://machinelearningmastery.com/plot-a-decision-surface-for-machin) N
+(e-learning/},) N
+(    abstract = {Classification algorithms learn how to assign class labels to ex) N
+(amples, although their decisions can appear opaque. A popular ) N
+(    diagnostic for [\342M-^@\246]},) N
+(    language = {en-US},) N
+(    urldate = {2021-09-19},) N
+(    journal = {Machine Learning Mastery},) N
+(    author = {Brownlee, Jason},) N
+(    month = aug,) N
+(    year = {2020},) N
+(    file = {Snapshot:C\\:\\\\Users\\\\Amaan\\\\Zotero\\\\storage\\\\XRTBM7XD\\\\plot-a-decisi) N
+(on-surface-for-machine-learning.html:text/html},) N
+(}) N
+(README.txt) (Page 1/2) (Sep 19, 21 6:04) title
 border
 /v 1 store
 /x0 x v get 3.362408 add sx cw mul add store
 /y0 y v get bfs th add sub store
 x0 y0 moveto
-(            ) p
-(return) K
-( self) p n
-() N
-() N
-(class) K
-( MLP\(tf.Module\):) p n
-(    ) S
-(def) K
-( __init__\(self, X_features, depth, width_arr\):) p n
-(        self.W = [None] * depth) N
-(        self.B = [None] * depth) N
-(        ) S
-(for) K
-( width, k ) p
-(in) K
-( zip\(width_arr, range\(1, depth + 1\)\):) p n
-(            self.W[k - 1] = tf.Variable\() N
-(                0.2 * tf.random.normal\(shape=[X_features, width]\),) N
-(                name=\(") S
-(WEIGHTS_) str
-(" + str\(k\)\),) p n
-(                dtype=np.float32,) N
-(            \)) N
-(            self.B[k - 1] = tf.Variable\() N
-(                0.001 * tf.ones\(shape=[width, 1]\),) N
-(                name=\(") S
-(BIAS_) str
-(" + str\(k\)\),) p n
-(                dtype=np.float32,) N
-(            \)) N
-() N
-(            X_features = width) N
-() N
-(    ) S
-(def) K
-( __call__\(self, X\):  ) p
-(# output from current layer) c n
-(        X_k = X) p n
-(        ) S
-(for) K
-( W_k, B_k ) p
-(in) K
-( zip\(self.W, self.B\):) p n
-(            func = tf.nn.relu ) S
-(if) K
-( W_k.shape[1] != 1 ) p
-(else) K
-( tf.nn.sigmoid) p n
-(            self.Z = tf.squeeze\(func\(\(\(tf.transpose\(W_k\) @ X_k\) + B_k\)\)\)) N
-(            X_k = tf.squeeze\(self.Z\)) N
-(        ) S
-(return) K
-( self.Z  ) p
-(# output is the predicted probabilities for input batch) c n
 () p n
-() N
-(def) K
-( train\(data, model\):) p n
-(    optimizer = tf.optimizers.Adam\(\)) N
-(    bar = trange\(NUM_ITR\)) N
-(    loss_dat = [0] * NUM_ITR) N
-(    ) S
-(for) K
-( i ) p
-(in) K
-( bar:) p n
-(        with tf.GradientTape\(\) as tape:) N
-(            X, y_true = data._batchGet\(BATCH_SIZE\)) N
-(            y_hat = model\(X\)) N
-(            loss_dat[i] = tf.losses.binary_crossentropy\(y_true, y_hat\)) N
-() N
-(        grads = tape.gradient\(loss_dat[i], model.trainable_variables\)) N
-(        optimizer.apply_gradients\(zip\(grads, model.trainable_variables\)\)) N
-(        bar.set_description\(f") S
-(Loss @ {i} => {loss_dat[i].numpy\(\):0.6f}) str
-("\)) p n
-(        bar.refresh\(\)) N
-() N
-(    ) S
-(return) K
-( loss_dat) p n
+(@misc{noauthor_archimedean_2021,) N
+(    title = {Archimedean spiral},) N
+(    copyright = {Creative Commons Attribution-ShareAlike License},) N
+(    url = {https://en.wikipedia.org/w/index.php?title=Archimedean_spiral&oldid=1) N
+(039754847},) N
+(    abstract = {The Archimedean spiral \(also known as the arithmetic spiral\) is ) N
+(a spiral named after the 3rd-century BC Greek ) N
+(    mathematician Archimedes. It is the locus corresponding to the locations ove) N
+(r time of a point moving away from a fixed point with a ) N
+(    constant speed along a line that rotates with constant angular velocity. Equ) N
+(ivalently, in polar coordinates \(r, \316\270\) it can be described ) N
+(    by the equation) N
 () N
 () N
-(# https://machinelearningmastery.com/plot-a-decision-surface-for-machine-learnin) c n
-(g/) N
-(def) K
-( decision_surf\(data, model\):) p n
-(    min1, max1 = data[0, :].min\(\) - 1, data[0, :].max\(\) + 1) N
-(    min2, max2 = data[1, :].min\(\) - 1, data[1, :].max\(\) + 1) N
+(    ) N
+(    ) N
+(        r) N
+(        =) N
+(        a) N
+(        +) N
+(        b) N
+(        \342M-^KM-^E) N
+(        \316\270) N
+(    ) N
+(    ) N
+(    \\{{\\textbackslash}displaystyle r=a+b{\\textbackslash}cdot {\\textbackslash}the) N
+(ta \\}) N
+(    with real numbers a and b. Changing the parameter a moves the centerpoint of) N
+( the spiral outward from the origin \(positive a toward \316\270 = 0 and negative a tow) N
+(ard \316\270 = \317M-^@\) ) N
+(    essentially through a rotation of the spiral, while b controls the distance ) N
+(between loops.) N
+(    From the above equation, it can thus be stated: the position of particle fro) N
+(m the point of start is proportional to the angle \316\270 as time elapses.) N
+(    Archimedes described such a spiral in his book On Spirals.  Conon of Samos w) N
+(as a friend of his and Pappus states that this spiral was discovered by Conon.},) N
+(    language = {en},) N
+(    urldate = {2021-09-19},) N
+(    journal = {Wikipedia},) N
+(    month = aug,) N
+(    year = {2021},) N
+(    note = {Page Version ID: 1039754847},) N
+(    file = {Snapshot:C\\:\\\\Users\\\\Amaan\\\\Zotero\\\\storage\\\\XXALYR9E\\\\index.html:te) N
+(xt/html},) N
+(}) N
 () N
-(    x1grid = np.arange\(min1, max1, 0.1\)) N
-(    x2grid = np.arange\(min2, max2, 0.1\)) N
-(    X, Y = np.meshgrid\(x1grid, x2grid\)) N
-(    r1, r2 = X.flatten\(\), Y.flatten\(\)) N
-(    r1, r2 = r1.reshape\(\(1, len\(r1\)\)\), r2.reshape\(\(1, len\(r2\)\)\)) N
-(    G = np.vstack\(\(r1, r2\)\)) N
-(    Z = tf.reshape\(model\(G\), shape=X.shape\)) N
-(    ) S
-(return) K
-( \(X, Y, Z\)) p n
-(bin_class.py) (Page 2/4) (Sep 19, 21 5:47) title
+(@misc{noauthor_python_nodate,) N
+(    title = {python - {Pandas} \\& {MatPlotLib}: {Plot} a {Bar} {Graph} on {Exist) N
+(ing} {Scatter} {Plot} or {Vice} {Versa}},) N
+(    shorttitle = {python - {Pandas} \\& {MatPlotLib}},) N
+(    url = {https://stackoverflow.com/questions/49991227/pandas-matplotlib-plot-a) N
+(-bar-graph-on-existing-scatter-plot-or-vice-versa},) N
+(    urldate = {2021-09-19},) N
+(    journal = {Stack Overflow},) N
+(    file = {Snapshot:C\\:\\\\Users\\\\Amaan\\\\Zotero\\\\storage\\\\HS537TGY\\\\pandas-matplo) N
+(tlib-plot-a-bar-graph-on-existing-scatter-plot-or-vice-versa.html:text/html},) N
+(}) N
+(README.txt) (Page 2/2) (Sep 19, 21 6:04) title
 border
 grestore
 (Printed by root) rhead
-(bin_class.py) (1/2) (Sunday September 19, 2021) footer
-end % of iso1dict
-pagesave restore
-showpage
-%%Page: (3-4) 2
-%%BeginPageSetup
-/pagesave save def
-sh 0 translate 90 rotate
-%%EndPageSetup
-iso1dict begin
-gsave
-llx lly 12 add translate
-/v 0 store
-/x0 x v get 3.362408 add sx cw mul add store
-/y0 y v get bfs th add sub store
-x0 y0 moveto
-() p n
-() N
-(# very messy data object setup :/) c n
-(# generating 2 seperate data objects) N
-(def) K
-( main\(\):) p n
-(    np.random.seed\(SEED\)) N
-(    ) S
-(# generate 2 Archimidean spirals) c n
-(    dataset = \() p n
-(        Data\() N
-(            NUM_SAMPLES,) N
-(            SIGMA_NOISE,) N
-(            1,) N
-(            {") S
-(min) str
-(": -ROT_NUM * 2 * np.pi + 0.1, ") p
-(max) str
-(": -0.1, ") p
-(center) str
-(": -1, ") p
-(gap) str
-(": 1) p n
-(},) N
-(        \),) N
-(        Data\() N
-(            NUM_SAMPLES,) N
-(            SIGMA_NOISE,) N
-(            0,) N
-(            {") S
-(min) str
-(": -ROT_NUM * 2 * np.pi + 0.1, ") p
-(max) str
-(": -0.1, ") p
-(center) str
-(": -1, ") p
-(gap) str
-(": 1) p n
-(},) N
-(        \),) N
-(    \)) N
-() N
-(    spiral_A = list\() N
-(        zip\() N
-(            dataset[0].spiral.data[0],) N
-(            dataset[0].spiral.data[1],) N
-(            dataset[0].spiral.data[2],) N
-(        \)) N
-(    \)) N
-(    spiral_B = list\() N
-(        zip\() N
-(            dataset[1].spiral.data[0],) N
-(            dataset[1].spiral.data[1],) N
-(            dataset[1].spiral.data[2],) N
-(        \)) N
-(    \)) N
-(    input_data = np.concatenate\(\(spiral_A, spiral_B\), axis=0\)) N
-(    dataset[0]._init_input\(input_data.T\)) N
-(    mlp_model = MLP\(dataset[0].data.shape[0], 8, [100, 75, 50, 25, 50, 75, 100, ) N
-(1]\)) N
-(    train\(dataset[0], mlp_model\)) N
-(    prob_surf = decision_surf\(dataset[0].data.numpy\(\), mlp_model\)) N
-() N
-(    ) S
-(# https://stackoverflow.com/questions/49991227/pandas-matplotlib-plot-a-bar-) c n
-(graph-on-existing-scatter-plot-or-vice-versa) N
-(    fig = plt.figure\(figsize=\(5, 3\), dpi=200\)) p n
-(    ax = fig.add_subplot\(111\)) N
-(    ax.contour\(*prob_surf, cmap=") S
-(RdPu) str
-(", linestyles=") p
-(solid) str
-(", levels=1\)) p n
-(    ax.scatter\() N
-(        input_data[0:NUM_SAMPLES, 0],) N
-(        input_data[0:NUM_SAMPLES, 1],) N
-(        c=") S
-(r) str
-(",) p n
-(        edgecolors=") S
-(k) str
-(",) p n
-(    \)) N
-(    ax.scatter\() N
-(        input_data[NUM_SAMPLES:, 0], input_data[NUM_SAMPLES:, 1], c=") S
-(b) str
-(", edgecol) p n
-(ors=") S
-(k) str
-(") p n
-(    \)) N
-(    ax.set_title\(") S
-(Spirals Dataset & Classification Boundary) str
-("\)) p n
-(    ax.set\(xlabel=") S
-(x-values) str
-(", ylabel=") p
-(y-values) str
-("\)) p n
-(bin_class.py) (Page 3/4) (Sep 19, 21 5:47) title
-border
-/v 1 store
-/x0 x v get 3.362408 add sx cw mul add store
-/y0 y v get bfs th add sub store
-x0 y0 moveto
-(    plt.savefig\(") p
-(output1.pdf) str
-("\)) p n
-() N
-() N
-(if) K
-( __name__ == ") p
-(__main__) str
-(":) p n
-(    main\(\)) N
-(bin_class.py) (Page 4/4) (Sep 19, 21 5:47) title
-border
-grestore
-(Printed by root) rhead
-(bin_class.py) (2/2) (Sunday September 19, 2021) footer
+(README.txt) (1/1) (Sunday September 19, 2021) footer
 end % of iso1dict
 pagesave restore
 showpage
