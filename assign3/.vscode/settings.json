@@ -1,0 +1,5 @@
+{
+    "editor.minimap.enabled": false,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": false
+}

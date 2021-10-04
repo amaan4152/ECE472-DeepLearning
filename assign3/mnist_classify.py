@@ -23,7 +23,6 @@ dataset = {
     "test-labels": "../datasets/MNIST_DATASET/t10k-labels-idx1-ubyte",
 }
 
-
 def parseDataset():
     images_set = []
     labels_set = []
