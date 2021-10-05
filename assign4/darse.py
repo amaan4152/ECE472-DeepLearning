@@ -32,11 +32,7 @@ class Parser(object):
             for k, v in self.dataset.items(): 
                 print("[" + k + "]: " + "START")
                 batch_dict = self.__unpickle(self.dataset[k])
-                self.images_set.append(np.apply_along_axis(np.reshape, 1, batch_dict[b'data'], [3, 32, 32]))
-                plt.imshow(self.images_set[0][0])
-                plt.savefig('img_00.png')
-                print(self.images_set[0][0].shape)
-                exit(1)
+                self.images_set.append(np.transpose(batch_dict[b'data'].reshape(10000, 3, 32, 32), (0, 2, 3, 1)))
                 self.labels_set.append(batch_dict[b'labels'])
 
                 print("[" + k + "]: " + "COMPLETE")
