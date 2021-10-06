@@ -46,7 +46,8 @@ def conv_blk(input, filter_depth):
     return out
 
 def res_blk(ID, x, filter_depth, blk_depth):
-    for i in range(blk_depth):
+    x = conv_blk(x, ID * filter_depth)
+    for i in range(blk_depth - 1):
         x = ident_blk(x, ID * filter_depth)
     return x
     
