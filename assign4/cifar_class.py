@@ -50,6 +50,7 @@ def main():
             kernel_size=(3, 3),
             activation=tf.nn.elu))
     model.add(MaxPooling2D(strides=(3,3)))
+    model.add(Flatten())
     model.add(Dropout(0.5))
     model.add(Dense(2048, 
               activation=tf.nn.leaky_relu,                      
