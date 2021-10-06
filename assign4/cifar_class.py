@@ -31,7 +31,7 @@ def plot_diagnostics(history):
 	plt.title('Classification Accuracy')
 	plt.plot(history.history['accuracy'], color='blue', label='train')
 	plt.plot(history.history['val_accuracy'], color='orange', label='validation')
-        plt.legend()
+    plt.legend()
 	# save plot to file
 	plt.savefig('cifar10_plot_' + str(getpid()) + '.png')
 	plt.close()
