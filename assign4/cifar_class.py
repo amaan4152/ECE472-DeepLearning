@@ -84,11 +84,11 @@ def main():
 	model.add(MaxPooling2D(strides=(2, 2)))
 	model.add(Flatten())
 	model.add(Dropout(0.5))
-	model.add(Dense(2048, 
+	model.add(Dense(4096, 
 							activation=tf.nn.leaky_relu,                      
 							kernel_regularizer=regularizers.l2(l2=0.0005)))
-	model.add(Dropout(0.5))
-	model.add(BatchNormalization(momentum=0.9))
+	model.add(Dropout(0.25))
+	model.add(BatchNormalization())
 	model.add(Dense(10, 
 							activation='softmax',                      
 							kernel_regularizer=regularizers.l2(l2=0.0005)))
