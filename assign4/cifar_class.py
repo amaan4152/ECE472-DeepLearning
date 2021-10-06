@@ -21,7 +21,6 @@ dataset = {
 
 # https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
 def plot_diagnostics(history):
-<<<<<<< Updated upstream
 	# plot loss
 	plt.subplot(211)
 	plt.title('Cross Entropy Loss')
@@ -36,22 +35,6 @@ def plot_diagnostics(history):
 	# save plot to file
 	plt.savefig('cifar10_plot_' + str(getpid()) + '.png')
 	plt.close()
-=======
-    # plot loss
-    plt.subplot(211)
-    plt.title('Cross Entropy Loss')
-    plt.plot(history.history['loss'], color='blue', label='train')
-    plt.plot(history.history['val_loss'], color='orange', label='validation')
-    # plot accuracy
-    plt.subplot(212)
-    plt.title('Classification Accuracy')
-    plt.plot(history.history['accuracy'], color='blue', label='train')
-    plt.plot(history.history['val_accuracy'], color='orange', label='validation')
-    plt.legend()
-    # save plot to file
-    plt.savefig('cifar10_plot_' + str(getpid()) + '.png')
-    plt.close()
->>>>>>> Stashed changes
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
 def lr_sched(epoch, lr):
