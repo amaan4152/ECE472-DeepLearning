@@ -1,10 +1,10 @@
 import tensorflow as tf
-import tensorflow_addons as tfa
 import numpy as np
 from matplotlib import pyplot as plt
 from darse import Parser
 from tensorflow.keras import models, regularizers
-from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D, BatchNormalization
+from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D
+from os import getpid
 
 BATCH_SIZE = 128
 EPOCHS = 40
@@ -18,44 +18,78 @@ dataset = {
     "test": "../datasets/CIFAR10_DATASET/pkl/test_batch",
 }
 
+# https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
+def plot_diagnostics(history):
+	# plot loss
+	plt.subplot(211)
+	plt.title('Cross Entropy Loss')
+	plt.plot(history.history['loss'], color='blue', label='train')
+	plt.plot(history.history['val_loss'], color='orange', label='validation')
+	# plot accuracy
+	plt.subplot(212)
+	plt.title('Classification Accuracy')
+	plt.plot(history.history['accuracy'], color='blue', label='train')
+	plt.plot(history.history['val_accuracy'], color='orange', label='validation')
+	# save plot to file
+	plt.savefig('cifar10_plot_' + str(getpid()) + '.png')
+	plt.close()
+
 def main():
     cifar_parser = Parser(dataset, 'CIFAR')
     train, test = cifar_parser.parse()
     train_data, train_labels = train
     test_data, test_labels = test
-
+    
     # model
     model = models.Sequential()
     model.add(Conv2D(64,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu,
             input_shape=(train_data.shape[1], train_data.shape[2], 3)))
     model.add(Conv2D(64,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
     model.add(MaxPooling2D(strides=(2,2)))
     model.add(Conv2D(256,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
     model.add(Conv2D(256,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
     model.add(Conv2D(256,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
     model.add(Conv2D(256,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
     model.add(Conv2D(256,
-            kernel_size=(3, 3),
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
             activation=tf.nn.elu))
-    model.add(MaxPooling2D(strides=(3,3)))
+    model.add(Conv2D(256,
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
+            activation=tf.nn.elu))
+    model.add(Conv2D(256,
+            kernel_size=(2, 2),
+            kernel_initializer='he_normal',
+            activation=tf.nn.elu))        
+    model.add(MaxPooling2D(strides=(2, 2)))
     model.add(Flatten())
     model.add(Dropout(0.5))
     model.add(Dense(2048, 
               activation=tf.nn.leaky_relu,                      
               kernel_regularizer=regularizers.l2(l2=0.0005)))
     model.add(Dropout(0.5))
+    model.add(Dense(2048, 
+              activation=tf.nn.leaky_relu,                      
+              kernel_regularizer=regularizers.l2(l2=0.0005)))
     model.add(Dense(1024, 
               activation=tf.nn.leaky_relu,                      
               kernel_regularizer=regularizers.l2(l2=0.0005)))
@@ -68,7 +102,7 @@ def main():
     model.compile(
         optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"]
     )
-    model.fit(
+    history = model.fit(
         x=train_data,
         y=train_labels,
         batch_size=BATCH_SIZE,
@@ -77,5 +111,7 @@ def main():
         validation_split=0.2,
     )
     model.evaluate(x=test_data, y=test_labels)
+    plot_diagnostics(history)
+
 if __name__ == '__main__':
     main()
