@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler
-from assign4.resnet import ResNet_50
+from resnet import ResNet_50
 from darse import Parser
 from tensorflow.keras import models, regularizers
 from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D, BatchNormalization, Activation, Add
