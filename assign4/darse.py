@@ -30,14 +30,11 @@ class Parser(object):
         elif self.type == 'CIFAR':  # dataset follows a dictionary construct based on training and test
             # https://mattpetersen.github.io/load-cifar10-with-numpy
             for k, v in self.dataset.items(): 
-                print("[" + k + "]: " + "START")
                 batch_dict = self.__unpickle(self.dataset[k])
-                self.images_set.append(np.transpose(batch_dict[b'data'].reshape(10000, 3, 32, 32), (0, 2, 3, 1)))
+                self.images_set.append(np.transpose(batch_dict[b'data'].reshape(10000, 3, 32, 32), (0, 2, 3, 1))/255.)
                 self.labels_set.append(batch_dict[b'labels'])
 
-                print("[" + k + "]: " + "COMPLETE")
-
-        return ((self.images_set[0], self.labels_set[0]), (self.images_set[1], self.labels_set[1]))
+        return ((np.concatenate([*self.images_set[:-1]]), np.array(self.labels_set[:-1]).flatten()), (self.images_set[-1], np.array(self.labels_set[-1]).flatten()))
 
     # https://www.cs.toronto.edu/~kriz/cifar.html
     def __unpickle(self, file):
