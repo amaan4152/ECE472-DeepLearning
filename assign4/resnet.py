@@ -66,7 +66,7 @@ def ResNet_50(in_shape):
     x = Activation('elu')(x)
     x = MaxPooling2D(pool_size=(3,3),
                      strides=(2,2),
-                     padding='same')
+                     padding='same')(x)
 
     res_depths = [3, 4, 6, 3]
     for i in range(len(res_depths)):
