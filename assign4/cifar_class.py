@@ -2,10 +2,9 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler
-from tensorflow.python.keras.layers.normalization.batch_normalization import BatchNormalization
 from darse import Parser
 from tensorflow.keras import models, regularizers
-from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D
+from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D, BatchNormalization
 from os import getpid
 
 BATCH_SIZE = 64
