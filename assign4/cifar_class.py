@@ -85,7 +85,7 @@ def main():
 	train_data, train_labels = train
 	test_data, test_labels = test
 	# model
-	model = ResNet_50((test_data[1], test_data[2], 3))
+	model = ResNet_50((test_data.shape[1], test_data.shape[2], 3))
 	model.summary()
 	# model compile
 	model.compile(
