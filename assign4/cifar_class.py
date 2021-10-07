@@ -49,22 +49,21 @@ def main():
 	test_data, test_labels = test
 
 	# model init
-	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=3)
+	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=9)
 	model.summary()
 
 	# model compile
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
-	callback = LearningRateScheduler(lr_sched)
+	#callback = LearningRateScheduler(lr_sched)
 	history = model.fit(
 			x=train_data,
 			y=train_labels,
 			batch_size=BATCH_SIZE,
 			epochs=EPOCHS,
 			steps_per_epoch=np.math.ceil(0.8 * train_data.shape[0] / BATCH_SIZE),
-			validation_split=0.2,
-			callbacks=[callback]
+			validation_split=0.2
 	)
 
 	# eval

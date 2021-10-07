@@ -76,7 +76,7 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dense(1000, activation=tf.nn.leaky_relu, kernel_regularizer=regularizers.l2(l2=0.005))(x)
+    x = Dense(1000, activation=tf.nn.leaky_relu, kernel_regularizer=regularizers.l2(l2=0.0001))(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(6*N+2)))
 
