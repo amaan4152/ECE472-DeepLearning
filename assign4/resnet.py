@@ -1,13 +1,15 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D
+from tensorflow.python.keras.layers.convolutional import Conv
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://arxiv.org/pdf/1512.03385.pdf
-def VGG_blk(input, filter_depth):
+def VGG_blk(input, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
-                padding='same')(input)
+                padding='same',
+                strides=s)(input)
 
     out = BatchNormalization(axis=3)(out)
     out = Activation('elu')(out)
@@ -21,26 +23,27 @@ def VGG_blk(input, filter_depth):
     out = Conv2D(4 * filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
-                padding='same')(input)
+                padding='same',
+                strides=s)(input)
 
     out = BatchNormalization(axis=3)(out)
     return out
 
 def ident_blk(input, filter_depth):
     ff_input = input
-    out = VGG_blk(input, filter_depth)
+    out = VGG_blk(input, filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
     return out
 
 def conv_blk(input, filter_depth):
     ff_input = input
-    out = VGG_blk(input, filter_depth)
+    out = VGG_blk(input, filter_depth, (2,2))
     ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     strides=(2,2))(ff_input)
-
+    ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
