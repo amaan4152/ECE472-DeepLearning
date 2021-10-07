@@ -2,13 +2,12 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler
+from tensorflow.keras.utils import plot_model
 from resnet import ResNet_50
 from darse import Parser
-from tensorflow.keras import models, regularizers
-from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D, BatchNormalization, Activation, Add
 from os import getpid
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 EPOCHS = 40
 
 dataset = {
@@ -39,7 +38,7 @@ def plot_diagnostics(history):
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
 def lr_sched(epoch, lr):
-    if epoch >= 5: 
+    if epoch >= EPOCHS/2: 
             return lr * tf.math.exp(-0.1)
     return lr
 
@@ -53,6 +52,7 @@ def main():
 	# model init
 	model = ResNet_50((test_data.shape[1], test_data.shape[2], 3))
 	model.summary()
+	plot_model(model, to_file=(str(getpid()) + '_ResNet-50.png'), show_shapes=True)
 
 	# model compile
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
