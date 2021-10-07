@@ -51,7 +51,6 @@ def main():
 	# model init
 	model = ResNet_50((test_data.shape[1], test_data.shape[2], 3))
 	model.summary()
-	plot_model(model, to_file=(str(getpid()) + '_ResNet-50.png'), show_shapes=True)
 
 	# model compile
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
