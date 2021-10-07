@@ -11,13 +11,14 @@ def VGG_blk(input, filter_depth, s):
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
                 kernel_regularizer=regularizers.l2(l2=0.0001),
-                strides=s)(input)
+                padding='same')(input)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
     out = Conv2D(filter_depth,
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.0001))(out)
+                kernel_regularizer=regularizers.l2(l2=0.0001),
+                padding='same')(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     return out
