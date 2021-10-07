@@ -1,3 +1,4 @@
+import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D
 from tensorflow.python.keras.layers.convolutional import Conv
@@ -79,7 +80,7 @@ def ResNet_50(in_shape):
     
     x = AveragePooling2D(padding='same')(x)
     x = Flatten()(x)
-    x = Dense(1024, activation='leaky_relu')(x)
+    x = Dense(1024, activation=tf.nn.leaky_relu)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name='ResNet-50')
 
