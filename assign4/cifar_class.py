@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler
-from resnet import ResNet_50
+from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
@@ -49,7 +49,7 @@ def main():
 	test_data, test_labels = test
 
 	# model init
-	model = ResNet_50((test_data.shape[1], test_data.shape[2], 3))
+	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=3)
 	model.summary()
 
 	# model compile
