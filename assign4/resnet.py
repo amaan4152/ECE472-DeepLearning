@@ -36,20 +36,21 @@ def ident_blk(input, filter_depth):
     out = Activation('elu')(out)
     return out
 
-def conv_blk(input, filter_depth):
+def conv_blk(input, filter_depth, stride):
     ff_input = input
-    out = VGG_blk(input, filter_depth, (2,2))
+    out = VGG_blk(input, filter_depth, stride)
     ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
-                    strides=(2,2))(ff_input)
+                    strides=stride)(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
 
 def res_blk(ID, x, filter_depth, blk_depth):
-    x = conv_blk(x, ID * filter_depth)
+    stride = (1,1) if ID == 1 else (2,2)
+    x = conv_blk(x, ID * filter_depth, stride)
     for i in range(blk_depth - 1):
         x = ident_blk(x, ID * filter_depth)
     return x
