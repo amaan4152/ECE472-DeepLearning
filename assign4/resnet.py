@@ -1,11 +1,12 @@
 import tensorflow as tf
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GaussianNoise
 from tensorflow.python.keras.layers.convolutional import Conv
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://arxiv.org/pdf/1512.03385.pdf
 def VGG_blk(input, filter_depth, s):
+    input = GaussianNoise(0.01)(input)
     out = Conv2D(filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
