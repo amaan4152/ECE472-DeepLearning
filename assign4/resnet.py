@@ -13,7 +13,7 @@ def VGG_blk(input, filter_depth, s):
                 kernel_regularizer=regularizers.l2(l2=0.0001),
                 padding='same',
                 strides=s)(input)
-
+    out = ZeroPadding2D(padding=(8,8))
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
     out = Conv2D(filter_depth,
@@ -68,7 +68,6 @@ def ResNet_N(in_shape, N):
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
-    x = MaxPooling2D(strides=(1,1), padding='same')(x)
     layers = [2 * N] * 3
     for i in range(len(layers)):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, layers[i])
