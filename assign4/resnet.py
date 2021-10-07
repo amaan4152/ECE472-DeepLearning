@@ -57,7 +57,7 @@ def ResNet_N(in_shape, N):
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
-    x = input
+    x = ZeroPadding2D(padding=(4,4))(input)
 
     x = Conv2D(16,
                kernel_size=(3,3),
