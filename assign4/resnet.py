@@ -39,7 +39,7 @@ def ident_blk(input, filter_depth):
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = VGG_blk(input, filter_depth, stride)
-    ff_out = Conv2D(filter_depth,
+    ff_out = Conv2D(4 * filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     strides=stride)(ff_input)
