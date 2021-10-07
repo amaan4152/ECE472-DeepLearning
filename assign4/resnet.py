@@ -74,7 +74,7 @@ def ResNet_N(in_shape, N):
     for i in range(len(layers[1:])):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, layers[i])
     
-    x = GlobalAveragePooling2D(padding='same')(x)
+    x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     # x = Dropout(0.5)(x)
     x = Dense(1000, activation=tf.nn.leaky_relu, kernel_regularizer=regularizers.l2(l2=0.005))(x)
