@@ -66,7 +66,6 @@ def ResNet_50(in_shape):
 
     input = Input(in_shape)
     x = ZeroPadding2D((3,3))(input)
-    x = GaussianNoise(0.01)(x)
     x = Conv2D(64,
                kernel_size=(7,7),
                kernel_initializer='he_normal',
