@@ -9,7 +9,7 @@ def VGG_blk(input, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.02),
+                kernel_regularizer=regularizers.l2(l2=0.01),
                 padding='same',
                 strides=s)(input)
 
@@ -18,7 +18,7 @@ def VGG_blk(input, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.02),
+                kernel_regularizer=regularizers.l2(l2=0.01),
                 padding='same')(out)
 
     out = BatchNormalization(axis=3)(out)
@@ -26,7 +26,7 @@ def VGG_blk(input, filter_depth, s):
     out = Conv2D(4 * filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.02),
+                kernel_regularizer=regularizers.l2(l2=0.01),
                 padding='same',
                 strides=s)(input)
 
@@ -78,7 +78,7 @@ def ResNet_50(in_shape):
                      strides=(2,2),
                      padding='same')(x)
 
-    res_depths = [2, 2, 2]
+    res_depths = [3, 6]
     for i in range(len(res_depths)):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, res_depths[i])
     
