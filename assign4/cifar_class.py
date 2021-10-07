@@ -6,8 +6,8 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-BATCH_SIZE = 32
-EPOCHS = 40
+BATCH_SIZE = 128
+EPOCHS = 50
 
 dataset = {
     "train-01": "../datasets/CIFAR10_DATASET/pkl/data_batch_1",
@@ -37,7 +37,7 @@ def plot_diagnostics(history):
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
 def lr_sched(epoch, lr):
-    if epoch >= 5: 
+    if epoch >= 12: 
             return lr * tf.math.exp(-0.1)
     return lr
 

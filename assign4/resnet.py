@@ -2,8 +2,8 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers
-from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D
-
+from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D, Cropping2D
+from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def VGG_blk(input, filter_depth, s):
@@ -60,7 +60,7 @@ def ResNet_N(in_shape, N):
 
     # Preprocessing method: RANDOM CROP
     x = ZeroPadding2D(padding=(4,4))(input)
-
+    x = RandomCrop(32, 32)(x)
     x = Conv2D(16,
                kernel_size=(3,3),
                kernel_initializer='he_normal',
@@ -76,7 +76,6 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    # x = Dropout(0.5)(x)
     x = Dense(1000, activation=tf.nn.leaky_relu, kernel_regularizer=regularizers.l2(l2=0.005))(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(6*N+2)))
