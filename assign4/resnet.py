@@ -16,6 +16,7 @@ def VGG_blk(input, filter_depth, s):
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
+    out = MaxPooling2D(strides=(2,2), padding='same')
     out = Conv2D(filter_depth,
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
@@ -64,7 +65,6 @@ def ResNet_N(in_shape, N):
     x = Conv2D(16,
                kernel_size=(3,3),
                kernel_initializer='he_normal',
-               strides=(1,1),
                padding='same')(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
@@ -76,7 +76,7 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D(padding='same')(x)
     x = Flatten()(x)
-    x = Dropout(0.5)(x)
+    # x = Dropout(0.5)(x)
     x = Dense(1000, activation=tf.nn.leaky_relu, kernel_regularizer=regularizers.l2(l2=0.005))(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(6*N+2)))
