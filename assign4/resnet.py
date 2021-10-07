@@ -71,8 +71,8 @@ def ResNet_N(in_shape, N):
     layers = [2 * N] * 3
     for i in range(len(layers)):
         x = ident_blk(x, filter_depth)
-    for i in range(len(layers)):
-        x = res_blk(i + 2, x, (i + 2)*filter_depth, layers[i + 1])
+    for i in range(len(layers[1:])):
+        x = res_blk(i + 1, x, (i + 1)*filter_depth, layers[i])
     
     x = GlobalAveragePooling2D(padding='same')(x)
     x = Flatten()(x)
