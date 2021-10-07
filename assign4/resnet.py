@@ -59,8 +59,7 @@ def ResNet_N(in_shape, N):
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
-    x = ZeroPadding2D((4,4))(input)
-    x = tf.image.random_crop(value=x, size=(32, 32, 3))
+    x = input
 
     x = Conv2D(16,
                kernel_size=(3,3),
