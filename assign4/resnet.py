@@ -6,7 +6,6 @@ from tensorflow.python.keras.layers.convolutional import Conv
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://arxiv.org/pdf/1512.03385.pdf
 def VGG_blk(input, filter_depth, s):
-    input = GaussianNoise(0.01)(input)
     out = Conv2D(filter_depth,
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
@@ -63,6 +62,7 @@ def ResNet_50(in_shape):
 
     input = Input(in_shape)
     x = ZeroPadding2D((3,3))(input)
+    x = GaussianNoise(0.01)(x)
     x = Conv2D(64,
                kernel_size=(7,7),
                kernel_initializer='he_normal',
