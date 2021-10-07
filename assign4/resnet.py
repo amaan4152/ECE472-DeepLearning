@@ -13,7 +13,7 @@ def VGG_blk(input, filter_depth, s):
                 kernel_regularizer=regularizers.l2(l2=0.0001),
                 padding='same',
                 strides=s)(input)
-    out = ZeroPadding2D(padding=(8,8))
+    out = ZeroPadding2D(padding=(8,8))(out)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
     out = Conv2D(filter_depth,
