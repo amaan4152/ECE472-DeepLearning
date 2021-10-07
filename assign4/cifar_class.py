@@ -43,54 +43,21 @@ def lr_sched(epoch, lr):
             return lr * tf.math.exp(-0.1)
     return lr
 
-# https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
-def VGG_blk(input, filter_depth):
-	out = Conv2D(filter_depth,
-				 kernel_size=(3,3),
-				 kernel_initializer='he_normal',
-				 padding='same')(input)
-
-	out = BatchNormalization(axis=3)(out)
-	out = Activation('elu')(out)
-	out = Conv2D(filter_depth,
-				 kernel_size=(3,3),
-				 kernel_initializer='he_normal',
-				 padding='same')(out)
-
-	out = BatchNormalization(axis=3)(out)
-	return out
-
-def ident_blk(input, filter_depth):
-	ff_input = input
-	out = VGG_blk(input, filter_depth)
-	out = Add()([out, ff_input])
-	out = Activation('elu')(out)
-	return out
-
-def conv_blk(input, filter_depth):
-	ff_input = input
-	out = VGG_blk(input, filter_depth)
-	ff_out = Conv2D(filter_depth,
-					kernel_size=(1,1),
-					kernel_initializer='he_normal',
-					strides=(2,2))(ff_input)
-
-	out = Add()([out, ff_out])
-	out = Activation('elu')(out)
-	return out
-
 def main():
+	# dataset parse
 	cifar_parser = Parser(dataset, 'CIFAR')
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
-	# model
+
+	# model init
 	model = ResNet_50((test_data.shape[1], test_data.shape[2], 3))
 	model.summary()
+
 	# model compile
-	model.compile(
-			optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"]
-	)
+	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+
+	# fit
 	callback = LearningRateScheduler(lr_sched)
 	history = model.fit(
 			x=train_data,
@@ -101,6 +68,8 @@ def main():
 			validation_split=0.2,
 			callbacks=[callback]
 	)
+
+	# eval
 	model.evaluate(x=test_data, y=test_labels)
 	plot_diagnostics(history)
 

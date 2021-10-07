@@ -66,7 +66,7 @@ def ResNet_50(in_shape):
                strides=(2,2),
                padding='same')(x)
 
-    x = BatchNormalization()(x)
+    x = BatchNormalization(axis=3)(x)
     x = Activation('elu')(x)
     x = MaxPooling2D(pool_size=(3,3),
                      strides=(2,2),
