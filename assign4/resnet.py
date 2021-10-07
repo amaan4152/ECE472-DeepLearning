@@ -75,10 +75,11 @@ def ResNet_50(in_shape):
                      strides=(2,2),
                      padding='same')(x)
 
-    res_depths = [2, 2]
+    res_depths = [1, 3]
     for i in range(len(res_depths)):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, res_depths[i])
     
+    x = VGG_blk(x, 3 * filter_depth, (1,1))
     x = AveragePooling2D(padding='same')(x)
     x = Flatten()(x)
     x = Dense(200, activation=tf.nn.leaky_relu)(x)
