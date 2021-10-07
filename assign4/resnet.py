@@ -41,6 +41,7 @@ def conv_blk(input, filter_depth, stride):
                     kernel_regularizer=regularizers.l2(l2=0.0001),
                     strides=stride)(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
+    ff_out = ZeroPadding2D((1,1))(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
