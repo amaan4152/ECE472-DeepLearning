@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.models import Model, regularizers
+from tensorflow.keras.models import Model
+from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, AveragePooling2D, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GaussianNoise
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
