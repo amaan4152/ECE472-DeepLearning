@@ -11,7 +11,8 @@ def VGG_blk(input, filter_depth, s):
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
                 kernel_regularizer=regularizers.l2(l2=0.0001),
-                padding='same')(input)
+                padding='same',
+                strides=s)(input)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
     out = Conv2D(filter_depth,
@@ -25,17 +26,17 @@ def VGG_blk(input, filter_depth, s):
 
 def ident_blk(input, filter_depth):
     ff_input = input
-    out = VGG_blk(input, filter_depth, (2,2))
+    out = VGG_blk(input, filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
     return out
 
-'''
+
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = VGG_blk(input, filter_depth, stride)
-    ff_out = Conv2D(4 * filter_depth,
-                    kernel_size=(1,1),
+    ff_out = Conv2D(filter_depth,
+                    kernel_size=(3,3),
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.0001),
                     strides=stride)(ff_input)
@@ -43,11 +44,11 @@ def conv_blk(input, filter_depth, stride):
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
-'''
+
 
 def res_blk(ID, x, filter_depth, blk_depth):
     for i in range(blk_depth):
-        x = ident_blk(x, ID * filter_depth)
+        x = conv_blk(x, ID * filter_depth, (2,2))
     return x
 
 
@@ -68,7 +69,9 @@ def ResNet_N(in_shape, N):
     x = Activation('elu')(x)
     layers = [2 * N] * 3
     for i in range(len(layers)):
-        x = res_blk(i + 1, x, (i + 1)*filter_depth, layers[i])
+        x = ident_blk(x, filter_depth)
+    for i in range(len(layers)):
+        x = res_blk(i + 2, x, (i + 2)*filter_depth, layers[i + 1])
     
     x = GlobalAveragePooling2D(padding='same')(x)
     x = Flatten()(x)
