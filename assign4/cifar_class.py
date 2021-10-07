@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler
-from tensorflow.keras.utils import plot_model
 from resnet import ResNet_50
 from darse import Parser
 from os import getpid
