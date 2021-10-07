@@ -68,7 +68,7 @@ def ResNet_N(in_shape, N):
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
-    x = MaxPooling2D(strides=(2,2), padding='same')(x)
+    x = MaxPooling2D(strides=(1,1), padding='same')(x)
     layers = [2 * N] * 3
     for i in range(len(layers)):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, layers[i])
