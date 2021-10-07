@@ -8,7 +8,7 @@ from tensorflow.keras import models, regularizers
 from tensorflow.keras.layers import Dense,Conv2D,Dropout,Flatten, MaxPooling2D, BatchNormalization, Activation, Add
 from os import getpid
 
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 EPOCHS = 40
 
 dataset = {

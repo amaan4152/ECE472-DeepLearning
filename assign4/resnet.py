@@ -74,7 +74,7 @@ def ResNet_50(in_shape):
                      strides=(2,2),
                      padding='same')(x)
 
-    res_depths = [3, 4, 6, 3]
+    res_depths = [3, 6, 3]
     for i in range(len(res_depths)):
         x = res_blk(i + 1, x, (i + 1)*filter_depth, res_depths[i])
     
