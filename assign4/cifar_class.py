@@ -37,6 +37,8 @@ def plot_diagnostics(history):
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
 def lr_sched(epoch, lr):
+	if epoch < 5:
+		return lr * 10
 	if epoch >= 10: 
 		if epoch % 5 == 0:
 			return lr/10
