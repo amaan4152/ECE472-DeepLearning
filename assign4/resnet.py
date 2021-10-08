@@ -70,7 +70,7 @@ def ResNet_N(in_shape, N):
                kernel_size=3,
                kernel_initializer='he_normal',
                padding='same',
-               strides=1)(x)
+               strides=2)(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
