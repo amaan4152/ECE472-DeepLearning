@@ -37,9 +37,10 @@ def plot_diagnostics(history):
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
 def lr_sched(epoch, lr):
-    if epoch >= EPOCHS/2: 
-            return 0.001
-    return lr
+	if epoch >= 10: 
+		if epoch % 5 == 0:
+			return lr/10
+	return lr
 
 def main():
 	# dataset parse
@@ -56,7 +57,7 @@ def main():
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
-	callback = ReduceLROnPlateau(monitor='val_loss', patience=5, factor=0.1, min_lr=0.00001, verbose=1)
+	callback = LearningRateScheduler(lr_sched, verbose=1)
 	history = model.fit(
 			x=train_data,
 			y=train_labels,
