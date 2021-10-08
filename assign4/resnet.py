@@ -72,7 +72,7 @@ def ResNet_N(in_shape, N):
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
 
-    layers = [2 * N] * 4
+    layers = [2] * 4
     for i in range(len(layers)):
         x = ident_blk(x, filter_depth)
     for i in range(len(layers[1:])):
@@ -82,7 +82,7 @@ def ResNet_N(in_shape, N):
     x = Flatten()(x)
     x = Dropout(0.3)(x)
     x = Dense(10, activation='softmax')(x)
-    model = Model(inputs=input, outputs=x, name=('ResNet-' + str(6*N)))
+    model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
     return model
     
