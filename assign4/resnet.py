@@ -6,7 +6,6 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def basic_blk(input, k, filter_depth, s):
-    out = GaussianDropout(0.65)(input)
     out = Conv2D(filter_depth,
                 kernel_size=k[0],
                 kernel_initializer='he_normal',  
@@ -16,6 +15,7 @@ def basic_blk(input, k, filter_depth, s):
                 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
+    out = Dropout(0.5)(input)
     out = Conv2D(filter_depth,
                 kernel_size=k[1],
                 kernel_initializer='he_normal',
@@ -30,6 +30,7 @@ def ident_blk(input, filter_depth):
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
+    out = Dropout(0.5)(input)
     return out
 
 
@@ -45,6 +46,7 @@ def conv_blk(input, filter_depth, stride):
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
+    out = Dropout(0.5)(input)
     return out
 
 
