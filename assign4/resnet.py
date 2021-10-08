@@ -20,7 +20,7 @@ def basic_blk(input, k, filter_depth, s):
                 kernel_size=k[1],
                 kernel_initializer='he_normal',
                 kernel_regularizer=regularizers.l2(l2=0.00001),
-                padding='valid')(out)
+                padding='same')(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     return out
