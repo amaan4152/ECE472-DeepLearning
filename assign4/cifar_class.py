@@ -56,7 +56,7 @@ def main():
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
-	callback = ReduceLROnPlateau(monitor='val_loss', factor=0.1, min_lr=0.00001)
+	callback = ReduceLROnPlateau(monitor='val_accuracy', patience=8, factor=0.1, min_lr=0.0001, verbose=1)
 	history = model.fit(
 			x=train_data,
 			y=train_labels,
