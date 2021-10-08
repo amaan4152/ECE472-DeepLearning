@@ -36,14 +36,14 @@ def ident_blk(input, filter_depth):
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = basic_blk(input, filter_depth, stride)
-    out = Conv2D(4 * filter_depth,
+    ff_out = Conv2D(4*filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.00005),
                     strides=stride,
-                    padding='same')(out)
-    out = BatchNormalization(axis=3)(out)
-    out = Add()([out, ff_input])
+                    padding='same')(ff_input)
+    ff_out = BatchNormalization(axis=3)(ff_out)
+    out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
 
