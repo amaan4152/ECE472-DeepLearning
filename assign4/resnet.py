@@ -49,7 +49,7 @@ def conv_blk(input, filter_depth, stride):
 
 
 def res_blk(ID, x, filter_depth, num_layers):
-    x = conv_blk(x, ID * filter_depth, (2,2))
+    #x = conv_blk(x, ID * filter_depth, (2,2))
     for i in range(num_layers - 1):
         x = ident_blk(x, ID*filter_depth)
     return x
