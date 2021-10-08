@@ -49,7 +49,7 @@ def main():
 	test_data, test_labels = test
 
 	# model init
-	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=2)
+	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=4)
 	model.summary()
 
 	# model compile

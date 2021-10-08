@@ -49,8 +49,9 @@ def conv_blk(input, filter_depth, stride):
 
 
 def res_blk(ID, x, filter_depth, num_layers):
-    for i in range(num_layers):
-        x = conv_blk(x, ID * filter_depth, (2,2))
+    x = conv_blk(x, ID * filter_depth, (2,2))
+    for i in range(num_layers - 1):
+        x = ident_blk(x, ID*filter_depth)
     return x
 
 
@@ -67,12 +68,12 @@ def ResNet_N(in_shape, N):
                kernel_size=(3,3),
                kernel_initializer='he_normal',
                padding='same',
-               strides=(2,2))(x)
+               strides=(1,1))(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
 
-    layers = [2] * 4
+    layers = [2] * N
     for i in range(len(layers)):
         x = ident_blk(x, filter_depth)
     for i in range(len(layers[1:])):
