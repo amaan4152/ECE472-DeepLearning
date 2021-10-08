@@ -20,7 +20,7 @@ def basic_blk(input, k, filter_depth, s):
                 kernel_size=k[1],
                 kernel_initializer='he_normal',
                 kernel_regularizer=regularizers.l2(l2=0.00001),
-                padding='same')(out)
+                padding='valid')(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     return out
@@ -82,8 +82,8 @@ def ResNet_N(in_shape, N):
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     x = Dropout(0.4)(x)
-    x = Dense(1000, activation='relu')(x)
-    x = Dropout(0.15)(x)
+    x = Dense(1000, activation=tf.nn.leaky_relu)(x)
+    x = Dropout(0.4)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
