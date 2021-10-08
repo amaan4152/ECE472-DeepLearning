@@ -67,7 +67,7 @@ def ResNet_N(in_shape, N):
     x = Conv2D(filter_depth,
                kernel_size=3,
                kernel_initializer='he_normal',
-               padding='same',
+               padding='valid',
                strides=2)(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
