@@ -10,7 +10,7 @@ def basic_blk(input, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',  
-                kernel_regularizer=regularizers.l2(l2=0.0001),
+                kernel_regularizer=regularizers.l2(l2=0.00001),
                 padding='same',
                 strides=s)(input)
                 
@@ -19,7 +19,7 @@ def basic_blk(input, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=(3,3),
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.0001),
+                kernel_regularizer=regularizers.l2(l2=0.00001),
                 padding='same')(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
@@ -39,7 +39,7 @@ def conv_blk(input, filter_depth, stride):
     ff_out = Conv2D(filter_depth,
                     kernel_size=(3,3),
                     kernel_initializer='he_normal',
-                    kernel_regularizer=regularizers.l2(l2=0.0001),
+                    kernel_regularizer=regularizers.l2(l2=0.00001),
                     strides=stride,
                     padding='same')(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
@@ -60,9 +60,9 @@ def ResNet_N(in_shape, N):
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
-    x = ZeroPadding2D(padding=(4,4))(input)
-    x = RandomCrop(32, 32)(x)
-
+    #x = ZeroPadding2D(padding=(4,4))(input)
+    #x = RandomCrop(32, 32)(x)
+    x = input
     # model
     x = Conv2D(filter_depth,
                kernel_size=(3,3),
@@ -81,7 +81,7 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.15)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
