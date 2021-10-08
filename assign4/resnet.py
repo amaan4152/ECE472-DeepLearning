@@ -36,7 +36,7 @@ def ident_blk(input, filter_depth):
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = basic_blk(input, (1,3), filter_depth, stride)
-    ff_out = Conv2D(2*filter_depth,
+    ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.00005),
