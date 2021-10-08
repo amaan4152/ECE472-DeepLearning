@@ -1,3 +1,4 @@
+from threading import active_count
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
@@ -67,8 +68,8 @@ def ResNet_N(in_shape, N):
     x = Conv2D(filter_depth,
                kernel_size=3,
                kernel_initializer='he_normal',
-               padding='valid',
-               strides=2)(x)
+               padding='same',
+               strides=1)(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
@@ -76,13 +77,17 @@ def ResNet_N(in_shape, N):
     layers = [2] * N
     for i in range(layers[0]):
         x = ident_blk(x, filter_depth)
+
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.15)(x)
-    x = Dense(10, activation='softmax')(x)
+    x = Dropout(0.4)(x)
+    x = Dense(2048, active_count=tf.nn.leaky_relu, kernel_initializer='he_normal')
+    x = BatchNormalization(momentum=0.9)(x)
+    x = Dropout(0.25)(x)
+    x = Dense(10, activation='softmax', kernel_initializer='he_normal')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
     return model
