@@ -15,7 +15,7 @@ def basic_blk(input, k, filter_depth, s):
                 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out)
-    out = Dropout(0.5)(input)
+    out = Dropout(0.5)(out)
     out = Conv2D(filter_depth,
                 kernel_size=k[1],
                 kernel_initializer='he_normal',
@@ -30,7 +30,7 @@ def ident_blk(input, filter_depth):
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
-    out = Dropout(0.5)(input)
+    out = Dropout(0.5)(out)
     return out
 
 
@@ -46,7 +46,7 @@ def conv_blk(input, filter_depth, stride):
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
-    out = Dropout(0.5)(input)
+    out = Dropout(0.5)(out)
     return out
 
 
