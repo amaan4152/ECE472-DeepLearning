@@ -6,7 +6,7 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 EPOCHS = 50
 
 dataset = {
