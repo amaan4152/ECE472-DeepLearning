@@ -49,11 +49,7 @@ def main():
 	test_data, test_labels = test
 
 	# model init
-<<<<<<< Updated upstream
-	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=9)
-=======
-	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=1)
->>>>>>> Stashed changes
+	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=5)
 	model.summary()
 
 	# model compile
