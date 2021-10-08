@@ -84,9 +84,8 @@ def ResNet_N(in_shape, N):
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     x = Dropout(0.4)(x)
-    x = Dense(2048, activation=tf.nn.leaky_relu, kernel_initializer='he_normal')(x)
-    x = BatchNormalization(momentum=0.9)(x)
-    x = Dropout(0.25)(x)
+    x = Dense(512, activation=tf.nn.leaky_relu, kernel_initializer='he_normal')(x)
+    x = Dropout(0.3)(x)
     x = Dense(10, activation='softmax', kernel_initializer='he_normal')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
