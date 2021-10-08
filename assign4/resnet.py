@@ -77,12 +77,10 @@ def ResNet_N(in_shape, N):
     for i in range(layers[0]):
         x = ident_blk(x, filter_depth)
     for i in range(len(layers[1:])):
-        x = res_blk(x, (i + 1)*filter_depth, layers[i])
+        x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.4)(x)
-    x = Dense(1000, activation=tf.nn.leaky_relu)(x)
     x = Dropout(0.4)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
