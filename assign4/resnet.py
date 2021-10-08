@@ -74,7 +74,7 @@ def ResNet_N(in_shape, N):
     x = Activation('elu')(x)
 
     layers = [2] * N
-    for i in range(len(layers)):
+    for i in range(len(layers[0])):
         x = ident_blk(x, filter_depth)
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 1)*filter_depth, layers[i])
