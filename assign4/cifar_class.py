@@ -6,8 +6,8 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-BATCH_SIZE = 64
-EPOCHS = 50
+BATCH_SIZE = 32
+EPOCHS = 100
 
 dataset = {
     "train-01": "../datasets/CIFAR10_DATASET/pkl/data_batch_1",
