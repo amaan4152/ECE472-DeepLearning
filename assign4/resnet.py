@@ -6,7 +6,7 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def basic_blk(input, k, filter_depth, s):
-    out = GaussianDropout(0.35)(input)
+    out = GaussianDropout(0.65)(input)
     out = Conv2D(filter_depth,
                 kernel_size=k[0],
                 kernel_initializer='he_normal',  
