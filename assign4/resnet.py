@@ -85,7 +85,7 @@ def ResNet_N(in_shape, N):
     x = Flatten()(x)
     x = Dropout(0.4)(x)
     x = Dense(2048, activation=tf.nn.leaky_relu, kernel_initializer='he_normal')
-    x = BatchNormalization(momentum=0.9)(x)
+    x = BatchNormalization(axis=0, momentum=0.9)(x)
     x = Dropout(0.25)(x)
     x = Dense(10, activation='softmax', kernel_initializer='he_normal')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
