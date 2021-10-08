@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from tensorflow.python.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
@@ -56,7 +56,7 @@ def main():
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
-	callback = LearningRateScheduler(lr_sched)
+	callback = ReduceLROnPlateau(monitor='val_acc', factor=0.1, min_lr=0.00001)
 	history = model.fit(
 			x=train_data,
 			y=train_labels,
