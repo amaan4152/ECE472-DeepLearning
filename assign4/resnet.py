@@ -68,7 +68,7 @@ def res_blk(x, filter_depth, num_layers):
                 kernel_size=(1,1),
                 kernel_initializer='he_normal',
                 kernel_regularizer=regularizers.l2(l2=0.00001),
-                strides=1,
+                strides=2,
                 padding='same')(x)
     for i in range(num_layers):
         x = ident_blk(x, filter_depth, 2)
