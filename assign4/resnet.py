@@ -8,7 +8,7 @@ def basic_blk(input, k, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=k[0],
                 kernel_initializer='he_normal',  
-                kernel_regularizer=regularizers.l2(l2=0.00001),
+                kernel_regularizer=regularizers.l2(l2=0.0001),
                 padding='same',
                 strides=s)(input)
                 
@@ -17,7 +17,7 @@ def basic_blk(input, k, filter_depth, s):
     out = Conv2D(filter_depth,
                 kernel_size=k[1],
                 kernel_initializer='he_normal',
-                kernel_regularizer=regularizers.l2(l2=0.00001),
+                kernel_regularizer=regularizers.l2(l2=0.0001),
                 padding='same')(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
@@ -28,7 +28,7 @@ def ident_blk(input, filter_depth):
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
-    out = Dropout(0.3)(out)
+    out = Dropout(0.5)(out)
     return out
 
 
@@ -38,13 +38,13 @@ def conv_blk(input, filter_depth, stride):
     ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
-                    kernel_regularizer=regularizers.l2(l2=0.00001),
+                    kernel_regularizer=regularizers.l2(l2=0.0001),
                     strides=stride,
                     padding='same')(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
-    out = Dropout(0.3)(out)
+    out = Dropout(0.5)(out)
     return out
 
 
@@ -82,8 +82,8 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.15)(x)
-    x = Dense(10, activation='softmax')(x)
+    x = Dropout(0.4)(x)
+    x = Dense(10, activation='softmax', kernel_regularizer=regularizers.l2(l2=0.00001))(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
     return model
