@@ -34,7 +34,7 @@ def plot_diagnostics(history):
 	plt.plot(history.history['val_accuracy'], color='orange', label='validation')
 	plt.legend()
 	# save plot to file
-	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/cifar10_plot_' + str(getpid()) + '.png')
+	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/DPE2_cifar10_plot_' + str(getpid()) + '.png')
 	plt.close()
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
