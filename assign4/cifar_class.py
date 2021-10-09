@@ -9,7 +9,7 @@ from darse import Parser
 from os import getpid
 
 BATCH_SIZE = 32
-EPOCHS = 500
+EPOCHS = 200
 
 dataset = {
     "train-01": "/zooper2/amaan.rahman/ECE472-DeepLearning/datasets/CIFAR10_DATASET/pkl/data_batch_1",
@@ -62,7 +62,7 @@ def main():
 	# https://arxiv.org/pdf/1506.01186.pdf
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 	#CLR = CyclicalLearningRate(initial_learning_rate=5e-4, maximal_learning_rate=1e-1, step_size=2*STEPS, scale_fn=lambda x: 1 / (2.0 ** (x - 1)))
-	model.compile(optimizer=Nadam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', verbose=1)
