@@ -65,15 +65,20 @@ def conv_blk(input, filter_depth, stride):
 
 
 def res_blk(x, filter_depth, num_layers):
-    x = conv_blk(x, filter_depth, (2,2))
+    x = Conv2D(filter_depth,
+                kernel_size=(1,1),
+                kernel_initializer='he_normal',
+                kernel_regularizer=regularizers.l2(l2=0.0001),
+                strides=2,
+                padding='same')(x)
     for i in range(num_layers - 1):
         x = ident_blk(x, filter_depth)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.2)(x)
     return x
 
 
 def ResNet_N(in_shape, N):
-    filter_depth = 16
+    filter_depth = 64
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
@@ -101,6 +106,10 @@ def ResNet_N(in_shape, N):
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
+    x = Dense(10, activation=tf.nn.leaky_relu)(x)
+    x = Dropout(0.3)(x)
+    x = Dense(10, activation=tf.nn.leaky_relu)(x)
+    x = Dropout(0.15)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
