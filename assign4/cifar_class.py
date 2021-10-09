@@ -23,7 +23,7 @@ dataset = {
 # https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
 def plot_diagnostics(history):
 	# plot loss
-	plt.subplot(211)
+	fig, axes = plt.subplot(211)
 	plt.title('Cross Entropy Loss')
 	plt.plot(history.history['loss'], color='blue', label='train')
 	plt.plot(history.history['val_loss'], color='orange', label='validation')
@@ -33,8 +33,9 @@ def plot_diagnostics(history):
 	plt.plot(history.history['accuracy'], color='blue', label='train')
 	plt.plot(history.history['val_accuracy'], color='orange', label='validation')
 	plt.legend()
+	fig.tight_layout()
 	# save plot to file
-	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/DPE2_cifar10_plot_' + str(getpid()) + '.png')
+	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/DPE2_1_cifar10_plot_' + str(getpid()) + '.png')
 	plt.close()
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
