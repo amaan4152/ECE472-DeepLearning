@@ -8,7 +8,7 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 EPOCHS = 500
 
 dataset = {
@@ -61,7 +61,7 @@ def main():
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-	CLR = CyclicalLearningRate(initial_learning_rate=1e-4, maximal_learning_rate=1e-2, step_size=2*STEPS, scale_fn=lambda x: 1 / (2.0 ** (x - 1)))
+	CLR = CyclicalLearningRate(initial_learning_rate=5e-4, maximal_learning_rate=1e-1, step_size=2*STEPS, scale_fn=lambda x: 1 / (2.0 ** (x - 1)))
 	model.compile(optimizer=Adam(learning_rate=CLR), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
