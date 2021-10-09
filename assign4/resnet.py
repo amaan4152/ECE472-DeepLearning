@@ -42,7 +42,7 @@ def gate_blk(input, epsilon, L):
 def ident_blk(input, filter_depth):
     ff_input = input
     out = basic_blk(input, (3,3), filter_depth, (1,1))
-    out = gate_blk(out, 2.5, 100)
+    #out = gate_blk(out, 2.5, 100)
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
     return out
@@ -58,7 +58,7 @@ def conv_blk(input, filter_depth, stride):
                     strides=stride,
                     padding='same')(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
-    out = gate_blk(out, 2.5, 100)
+    #out = gate_blk(out, 2.5, 100)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
     return out
