@@ -62,7 +62,7 @@ def main():
 	# https://arxiv.org/pdf/1506.01186.pdf
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 	#CLR = CyclicalLearningRate(initial_learning_rate=5e-4, maximal_learning_rate=1e-1, step_size=2*STEPS, scale_fn=lambda x: 1 / (2.0 ** (x - 1)))
-	model.compile(optimizer=Nadam(learning_rate=0.01), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+	model.compile(optimizer=Nadam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', verbose=1)

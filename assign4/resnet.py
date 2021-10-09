@@ -104,7 +104,7 @@ def ResNet_N(in_shape, N):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
         x = Dropout(0.3)(x)
     
-    x = MaxPooling2D(padding='same')(x)
+    x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     x = Dropout(0.15)(x)
     x = Dense(10, activation='softmax')(x)
