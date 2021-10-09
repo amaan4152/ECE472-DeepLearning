@@ -68,7 +68,7 @@ def res_blk(x, filter_depth, num_layers):
     x = conv_blk(x, filter_depth, (2,2))
     for i in range(num_layers - 1):
         x = ident_blk(x, filter_depth)
-    #x = Dropout(0.5)(x)
+    x = Dropout(0.6)(x)
     return x
 
 
