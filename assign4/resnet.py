@@ -82,7 +82,7 @@ def ResNet_N(in_shape, N):
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.4)(x)
+    x = Dropout(0.25)(x)
     x = Dense(10, activation='softmax', kernel_regularizer=regularizers.l2(l2=0.00001))(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
