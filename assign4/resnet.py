@@ -73,7 +73,6 @@ def res_blk(x, filter_depth, num_layers):
                 padding='same')(x)
     for i in range(num_layers - 1):
         x = ident_blk(x, filter_depth)
-    x = Dropout(0.2)(x)
     return x
 
 
@@ -92,7 +91,7 @@ def ResNet_N(in_shape, N):
                kernel_size=3,
                kernel_initializer='he_normal',
                padding='same',
-               strides=1)(x)
+               strides=2)(x)
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
@@ -100,12 +99,15 @@ def ResNet_N(in_shape, N):
     layers = [2] * N
     for i in range(layers[0]):
         x = ident_blk(x, filter_depth)
+        x = Dropout(0.15)(x)
+
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
+        x = Dropout(0.3)(x)
     
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.3)(x)
+    x = Dropout(0.15)(x)
     x = Dense(10, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(4*N + 2)))
 
