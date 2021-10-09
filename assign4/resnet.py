@@ -70,7 +70,7 @@ def res_blk(x, filter_depth, num_layers):
                 kernel_regularizer=regularizers.l2(l2=0.0001),
                 strides=2,
                 padding='same')(x)
-    for i in range(num_layers - 1):
+    for i in range(num_layers):
         x = ident_blk(x, filter_depth)
     return x
 
