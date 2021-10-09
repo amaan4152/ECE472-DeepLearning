@@ -71,7 +71,7 @@ def res_blk(x, filter_depth, num_layers):
                 strides=2,
                 padding='same')(x)
     for i in range(num_layers):
-        x = ident_blk(x, filter_depth, 2)
+        x = ident_blk(x, filter_depth, 1)
     return x
 
 
