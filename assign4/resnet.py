@@ -29,7 +29,7 @@ def ident_blk(input, filter_depth):
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
-    out = Dropout(0.35)(out)
+    out = Dropout(0.4)(out)
     return out
 
 
@@ -45,7 +45,7 @@ def conv_blk(input, filter_depth, stride):
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
-    out = Dropout(0.4)(out)
+    out = Dropout(0.5)(out)
     return out
 
 
@@ -81,7 +81,7 @@ def ResNet_N(in_shape, N):
 
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
-    
+
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     x = Dropout(0.15)(x)
