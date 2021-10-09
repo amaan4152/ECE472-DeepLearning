@@ -61,7 +61,7 @@ def main():
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
 	STEPS = np.math.ceil(0.8 * train_data.shape[0] / BATCH_SIZE)
-	CLR = CyclicalLearningRate(initial_learning_rate=0.001, maximal_learning_rate=0.005, step_size=STEPS, scale_fn=(lambda x: 1 / (2.0 ** (x - 1))))
+	CLR = CyclicalLearningRate(initial_learning_rate=0.001, maximal_learning_rate=0.005, step_size=8*STEPS, scale_fn=(lambda x: 1 / (2.0 ** (x - 1))))
 	model.compile(optimizer=Adam(learning_rate=CLR), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
