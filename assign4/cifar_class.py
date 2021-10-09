@@ -3,7 +3,7 @@ from tensorflow_addons.optimizers import CyclicalLearningRate
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Nadam
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
@@ -61,8 +61,8 @@ def main():
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
 	STEPS = np.math.ceil(0.8 * train_data.shape[0] / BATCH_SIZE)
-	CLR = CyclicalLearningRate(initial_learning_rate=0.001, maximal_learning_rate=0.005, step_size=8*STEPS, scale_fn=(lambda x: 1 / (2.0 ** (x - 1))))
-	model.compile(optimizer=Adam(learning_rate=CLR), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+	CLR = CyclicalLearningRate(initial_learning_rate=0.0001, maximal_learning_rate=0.005, step_size=8*STEPS, scale_fn=(lambda x: 1 / (2.0 ** (x - 1))))
+	model.compile(optimizer=Nadam(learning_rate=CLR), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', verbose=1)

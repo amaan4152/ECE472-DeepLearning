@@ -52,6 +52,7 @@ def res_blk(x, filter_depth, num_layers):
     x = conv_blk(x, filter_depth, (2,2))
     for i in range(num_layers - 1):
         x = ident_blk(x, filter_depth)
+    x = Dropout(0.35)(x)
     return x
 
 
@@ -77,7 +78,6 @@ def ResNet_N(in_shape, N):
     layers = [2] * N
     for i in range(layers[0]):
         x = ident_blk(x, filter_depth)
-
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
     
