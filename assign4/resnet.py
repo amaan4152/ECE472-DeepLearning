@@ -1,7 +1,8 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D
-from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
+from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, RandomFlip
+from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def basic_blk(input, k, filter_depth, s):
@@ -28,7 +29,7 @@ def ident_blk(input, filter_depth):
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = Activation('elu')(out)
-    out = Dropout(0.3)(out)
+    out = Dropout(0.35)(out)
     return out
 
 
@@ -44,7 +45,7 @@ def conv_blk(input, filter_depth, stride):
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
     out = Activation('elu')(out)
-    out = Dropout(0.3)(out)
+    out = Dropout(0.4)(out)
     return out
 
 
@@ -62,7 +63,8 @@ def ResNet_N(in_shape, N):
     # Preprocessing method: RANDOM CROP
     x = ZeroPadding2D(padding=(4,4))(input)
     x = RandomCrop(32, 32)(x)
-    #x = input
+    x = RandomFlip(mode=HORIZONTAL)(x)
+
     # model
     x = Conv2D(filter_depth,
                kernel_size=3,
