@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau
-from tensorflow.keras.utils import plot_model
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
@@ -55,7 +54,6 @@ def main():
 	# model init
 	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=4)
 	model.summary()
-	plot_model(model)
 
 	# model compile
 	model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
