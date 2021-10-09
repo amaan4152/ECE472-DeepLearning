@@ -8,4 +8,5 @@
 #SBATCH --nodes=1-1
 #SBATCH --mem=1gb
 
+export HOME=/zooper2/amaan.rahman
 python3 /zooper2/amaan.rahman/ECE472-DeepLearning/assign4/cifar_class.py
