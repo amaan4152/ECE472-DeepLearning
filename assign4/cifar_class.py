@@ -34,7 +34,7 @@ def plot_diagnostics(history):
 	plt.plot(history.history['val_accuracy'], color='orange', label='validation')
 	plt.legend()
 	# save plot to file
-	plt.savefig('cifar10_plot_' + str(getpid()) + '.png')
+	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/cifar10_plot_' + str(getpid()) + '.png')
 	plt.close()
 
 # https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler
@@ -54,25 +54,24 @@ def main():
 	test_data, test_labels = test
 
 	# model init
-	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=4)
+	model = ResNet_N((test_data.shape[1], test_data.shape[2], 3), N=4) # N = 4 => ResNet_18
 	model.summary()
 
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	STEPS = np.math.ceil(0.8 * train_data.shape[0] / BATCH_SIZE)
-	CLR = CyclicalLearningRate(initial_learning_rate=0.0001, maximal_learning_rate=0.005, step_size=8*STEPS, scale_fn=(lambda x: 1 / (2.0 ** (x - 1))))
+	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
+	CLR = CyclicalLearningRate(initial_learning_rate=1e-4, maximal_learning_rate=1e-2, step_size=2*STEPS, scale_fn=lambda x: 1 / (2.0 ** (x - 1)))
 	model.compile(optimizer=Adam(learning_rate=CLR), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 	# fit
-	callback = ReduceLROnPlateau(monitor='val_loss', verbose=1)
+	#callback = ReduceLROnPlateau(monitor='val_loss', verbose=1)
 	history = model.fit(
 			x=train_data,
 			y=train_labels,
 			batch_size=BATCH_SIZE,
 			epochs=EPOCHS,
 			steps_per_epoch=STEPS,
-			callbacks=[callback],
 			validation_split=0.2
 	)
 
