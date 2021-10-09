@@ -1,10 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers
-from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Multiply,Input, ZeroPadding2D, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Multiply,Input, ZeroPadding2D, GlobalAveragePooling2D, MaxPooling2D
 from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, RandomFlip
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
-from tensorflow.python.ops.gen_math_ops import Mul
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def basic_blk(input, k, filter_depth, s):
@@ -80,7 +79,7 @@ def ResNet_N(in_shape, N):
     filter_depth = 64
     input = Input(in_shape)
 
-    # Preprocessing method: RANDOM CROP
+    # Preprocessing method: RANDOM CROP & FLIP
     x = ZeroPadding2D(padding=(4,4))(input)
     x = RandomCrop(32, 32)(x)
     x = RandomFlip(mode=HORIZONTAL)(x)
@@ -105,7 +104,7 @@ def ResNet_N(in_shape, N):
         x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
         x = Dropout(0.3)(x)
     
-    x = GlobalAveragePooling2D()(x)
+    x = MaxPooling2D(padding='same')(x)
     x = Flatten()(x)
     x = Dropout(0.15)(x)
     x = Dense(10, activation='softmax')(x)
