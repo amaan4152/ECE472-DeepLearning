@@ -58,8 +58,8 @@ def main():
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
-	train_labels = to_categorical(train_labels)
-	test_labels = to_categorical(test_labels)
+	train_labels = to_categorical(train_labels, num_classes=100)
+	test_labels = to_categorical(test_labels, num_classes=100)
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
 	# model init
