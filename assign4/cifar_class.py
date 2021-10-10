@@ -59,8 +59,8 @@ def main():
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
-	train_labels = tf.transpose(to_categorical(train_labels, num_classes=100))
-	test_labels = tf.transpose(to_categorical(test_labels, num_classes=100))
+	train_labels = to_categorical(train_labels, num_classes=100)
+	test_labels = to_categorical(test_labels, num_classes=100)
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
@@ -71,7 +71,7 @@ def main():
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=[TopKCategoricalAccuracy(), "accuracy"])
+	model.compile(optimizer=Adam(), loss="categorical_crossentropy", metrics=[TopKCategoricalAccuracy(), "accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', min_lr=1e-4, verbose=1)
