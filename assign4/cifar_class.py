@@ -2,6 +2,7 @@ from tensorflow.python.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.metrics import TopKCategoricalAccuracy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import to_categorical
+import tensorflow as tf
 from matplotlib import pyplot as plt
 from resnet import ResNet_N
 from darse import Parser
@@ -58,11 +59,9 @@ def main():
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
-	train_labels = to_categorical(train_labels, num_classes=100)
-	test_labels = to_categorical(test_labels, num_classes=100)
+	train_labels = tf.transpose(to_categorical(train_labels, num_classes=100))
+	test_labels = tf.transpose(to_categorical(test_labels, num_classes=100))
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-	print(train_labels.shape)
-	exit(1)
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
 					 layers = [3, 8, 8, 3], 
