@@ -59,7 +59,7 @@ def main():
 
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
-					 layers = [3, 4, 23, 3], 
+					 layers = [3, 8, 36, 3], 
 					 classes = 100) 
 	model.summary()
 
