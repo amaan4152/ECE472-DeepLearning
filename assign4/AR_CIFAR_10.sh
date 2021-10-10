@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=JOB_NAME
+#SBATCH --job-name=AR_CIFAR_10_EXP
 #SBATCH --output=/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/output.txt
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --gres-flags=enforce-binding
 #SBATCH --nodes=1-1
