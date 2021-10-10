@@ -61,7 +61,8 @@ def main():
 	train_labels = to_categorical(train_labels, num_classes=100)
 	test_labels = to_categorical(test_labels, num_classes=100)
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-
+	print(train_labels[0])
+	exit(1)
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
 					 layers = [3, 8, 8, 3], 
