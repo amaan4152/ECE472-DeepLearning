@@ -9,7 +9,7 @@ from darse import Parser
 from os import getpid
 
 CIFAR_TYPE = 100
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 EPOCHS = 200
 
 # CIFAR_10
@@ -63,7 +63,7 @@ def main():
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
-					 layers = [2, 2, 2, 2], 
+					 layers = [3, 4, 6, 3], 
 					 classes = 100) 
 	model.summary()
 
