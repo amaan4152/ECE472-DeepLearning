@@ -12,6 +12,7 @@ BOTTLENECK = False
 def basic_blk(input, k, f, s):
     out = BatchNormalization(axis=3, momentum=0.9)(input)
     out = Activation('elu')(out)
+    out = Dropout(0.5)(out)
     out = Conv2D(filters = f,
                 kernel_size = k[0],
                 kernel_initializer = 'he_normal',  
@@ -28,25 +29,26 @@ def basic_blk(input, k, f, s):
                 padding = 'same')(out)
 
     if BOTTLENECK:
+        out = BatchNormalization(axis=3, momentum=0.9)(out)
+        out = Activation('elu')(out) 
         out = Conv2D(filters = (4 * f),
                     kernel_size = k[2],
                     kernel_initializer = 'he_normal',
                     kernel_regularizer = regularizers.l2(l2=0.00001),
                     padding = 'same')(out)
-    
     return out
 
 def ident_blk(input, filter_depth):
     ff_input = input
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
-    out = Dropout(0.4)(out)
     return out
 
 
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = basic_blk(input, (1,3), filter_depth, stride)
+    out = Dropout(0.5)(out)
     ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
@@ -55,7 +57,6 @@ def conv_blk(input, filter_depth, stride):
                     padding='same')(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
-    out = Dropout(0.5)(out)
     return out
 
 
@@ -96,7 +97,7 @@ def ResNet_N(in_shape, layers, classes):
 
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
-    x = Dropout(0.15)(x)
+    x = Dropout(0.3)(x)
     x = Dense(classes, activation='softmax')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(np.sum(layers) + 2)))
 

@@ -1,10 +1,12 @@
 from tensorflow.python.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
 from matplotlib import pyplot as plt
+from tensorflow.python.keras.utils.generic_utils import class_and_config_for_serialized_keras_object
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
+CIFAR_TYPE = 100
 BATCH_SIZE = 32
 EPOCHS = 200
 
@@ -45,7 +47,12 @@ def plot_diagnostics(history):
 
 def main():
 	# dataset parse
-	cifar_parser = Parser(dataset_10, 'CIFAR')
+	if CIFAR_TYPE == 10:
+		dataset = dataset_10
+	elif CIFAR_TYPE == 100:
+		dataset = dataset_100
+		
+	cifar_parser = Parser(dataset, 'CIFAR')
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test

@@ -31,7 +31,7 @@ class Parser(object):
             # https://mattpetersen.github.io/load-cifar10-with-numpy
             for k, v in self.dataset.items(): 
                 batch_dict = self.__unpickle(self.dataset[k])
-                self.images_set.append(np.transpose(batch_dict[b'data'].reshape(10000, 3, 32, 32), (0, 2, 3, 1))/255.)
+                self.images_set.append(np.transpose(batch_dict[b'data'].reshape(len(batch_dict[b'data']), 3, 32, 32), (0, 2, 3, 1))/255.)
                 self.labels_set.append(batch_dict[b'labels'])
 
         return ((np.concatenate([*self.images_set[:-1]]), np.array(self.labels_set[:-1]).flatten()), (self.images_set[-1], np.array(self.labels_set[-1]).flatten()))
