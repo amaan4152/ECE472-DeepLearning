@@ -16,7 +16,7 @@ def basic_blk(input, k, f, s):
     out = Conv2D(filters = f,
                 kernel_size = k[0],
                 kernel_initializer = 'he_normal',  
-                kernel_regularizer = regularizers.l2(l2=0.00001),
+                kernel_regularizer = regularizers.l2(l2=0.0001),
                 padding = 'same',
                 strides = s)(out)
     
@@ -25,7 +25,7 @@ def basic_blk(input, k, f, s):
     out = Conv2D(filters = f,
                 kernel_size = k[1],
                 kernel_initializer = 'he_normal',
-                kernel_regularizer = regularizers.l2(l2=0.00001),
+                kernel_regularizer = regularizers.l2(l2=0.0001),
                 padding = 'same')(out)
 
     if BOTTLENECK:
@@ -42,7 +42,7 @@ def ident_blk(input, filter_depth):
     ff_input = input
     out = basic_blk(input, (1,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
-    out = SpatialDropout2D(0.3)(out)
+    out = SpatialDropout2D(0.5)(out)
     return out
 
 
@@ -70,7 +70,7 @@ def res_blk(x, filter_depth, num_layers, init_stride):
 
 
 def ResNet_N(in_shape, layers, classes):
-    filter_depth = 16
+    filter_depth = 64
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
@@ -95,7 +95,7 @@ def ResNet_N(in_shape, layers, classes):
 
     x = AveragePooling2D(padding='same')(x)
     x = Flatten()(x)
-    x = Dropout(0.4)(x)
+    x = Dropout(0.5)(x)
     x = Dense(classes, activation='softmax', kernel_initializer='he_normal')(x)
     model = Model(inputs=input, outputs=x, name=('ResNet-' + str(2*np.sum(layers) + 2)))
 
