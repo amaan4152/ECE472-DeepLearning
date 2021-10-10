@@ -16,7 +16,7 @@ def basic_blk(input, k, f, s):
                 kernel_initializer = 'he_normal',  
                 kernel_regularizer = regularizers.l2(l2=0.0001),
                 padding = 'same',
-                strides = s)(input)
+                strides = s)(out)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out) 
 
@@ -69,7 +69,7 @@ def res_blk(x, filter_depth, num_layers, init_stride):
 
 
 def ResNet_N(in_shape, layers, classes):
-    filter_depth = 32
+    filter_depth = 64
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
@@ -91,7 +91,7 @@ def ResNet_N(in_shape, layers, classes):
 
     x = res_blk(x, filter_depth, layers[0], init_stride=1)
     for i in range(len(layers[1:])):
-        x = res_blk(x, (i + 2)*filter_depth, layers[i + 1], init_stride=2)
+        x = res_blk(x, (2**(i+1))*filter_depth, layers[i + 1], init_stride=2)
 
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
