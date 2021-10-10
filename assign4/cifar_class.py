@@ -52,7 +52,7 @@ def main():
 	elif CIFAR_TYPE == 100:
 		dataset = dataset_100
 
-	cifar_parser = Parser(dataset, 'CIFAR')
+	cifar_parser = Parser(dataset, 'CIFAR_10')
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
