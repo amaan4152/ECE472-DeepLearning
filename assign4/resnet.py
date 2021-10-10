@@ -5,7 +5,7 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, Rando
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 import numpy as np
 
-BOTTLENECK = True
+BOTTLENECK = False
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
@@ -87,7 +87,7 @@ def ResNet_N(in_shape, layers, classes):
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
-    
+
     for i in range(layers[0]):
         x = ident_blk(x, filter_depth)
 
