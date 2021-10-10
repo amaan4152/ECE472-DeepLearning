@@ -10,7 +10,7 @@ BOTTLENECK = True
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
 def basic_blk(input, k, f, s):
-    out = Dropout(0.3)(input)
+    out = Dropout(0.5)(input)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('relu')(out) 
     out = Conv2D(filters = f,
@@ -48,7 +48,7 @@ def ident_blk(input, filter_depth):
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = basic_blk(input, (1,3,1), filter_depth, stride)
-    ff_input = Dropout(0.3)(ff_input)
+    ff_input = Dropout(0.5)(ff_input)
     ff_input = BatchNormalization(axis=3, momentum=0.9)(ff_input)
     ff_input = Activation('elu')(ff_input)
     ff_input = Conv2D(4 * filter_depth,
