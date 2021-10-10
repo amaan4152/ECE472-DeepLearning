@@ -1,8 +1,7 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers
-from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D, AveragePooling2D, MaxPooling2D
 from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, RandomFlip
-from tensorflow.python.keras.layers.pooling import AveragePooling2D
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 import numpy as np
 
@@ -62,8 +61,8 @@ def conv_blk(input, filter_depth, stride):
     return out
 
 
-def res_blk(x, filter_depth, num_layers):
-    x = conv_blk(x, filter_depth, (2,2))
+def res_blk(x, filter_depth, num_layers, init_stride):
+    x = conv_blk(x, filter_depth, init_stride)
     for i in range(num_layers-1):
         x = ident_blk(x, filter_depth)
     return x
@@ -74,9 +73,9 @@ def ResNet_N(in_shape, layers, classes):
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
-    x = ZeroPadding2D(padding=(4,4))(input)
-    x = RandomCrop(32, 32)(x)
-    x = RandomFlip(mode=HORIZONTAL)(x)
+    x = ZeroPadding2D(padding=(3,3))(input)
+    #x = RandomCrop(32, 32)(x)
+    #x = RandomFlip(mode=HORIZONTAL)(x)
 
     # model
     x = Conv2D(filter_depth,
@@ -87,9 +86,11 @@ def ResNet_N(in_shape, layers, classes):
 
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
+    x = MaxPooling2D(pool_size=3, strides=2)(x)
 
-    for i in range(len(layers)):
-        x = res_blk(x, (i + 1)*filter_depth, layers[i])
+    x = res_blk(x, filter_depth, layers[0], init_stride=1)
+    for i in range(len(layers[1:])):
+        x = res_blk(x, (i + 2)*filter_depth, layers[i + 1], init_stride=2)
 
     x = AveragePooling2D(padding='same')(x)
     x = Flatten()(x)
