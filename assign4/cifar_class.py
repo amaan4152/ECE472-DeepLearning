@@ -6,7 +6,7 @@ from darse import Parser
 from os import getpid
 
 CIFAR_TYPE = 100
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 EPOCHS = 500
 
 # CIFAR_10
