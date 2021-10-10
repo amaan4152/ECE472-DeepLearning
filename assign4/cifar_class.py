@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
+import numpy as np
 
 CIFAR_TYPE = 100
 BATCH_SIZE = 128
@@ -56,7 +57,8 @@ def main():
 	train_data, train_labels = train
 	test_data, test_labels = test
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-
+	print(np.max(train_labels))
+	exit(1)
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
 					 layers = [3, 8, 8, 3], 
