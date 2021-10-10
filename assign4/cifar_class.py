@@ -56,7 +56,7 @@ def main():
 	train_data, train_labels = train
 	test_data, test_labels = test
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-	
+
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
 					 layers = [3, 4, 6, 3], 
@@ -66,7 +66,7 @@ def main():
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["top_k_categorical_accuracy"])
+	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["top_k_categorical_accuracy", "accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', min_lr=1e-4, verbose=1)
