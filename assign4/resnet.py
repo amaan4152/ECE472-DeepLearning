@@ -47,25 +47,23 @@ def ident_blk(input, filter_depth):
 
 def conv_blk(input, filter_depth, stride):
     ff_input = input
-    out = basic_blk(input, (1,3), filter_depth, stride)
+    out = basic_blk(input, (1,3,1), filter_depth, stride)
     out = Dropout(0.5)(out)
-    ff_out = Conv2D(filter_depth,
+    ff_input = BatchNormalization(axis=3)(ff_input)
+    ff_input = Activation('elu')(ff_input)
+    ff_input = Conv2D(filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.00001),
                     strides=stride,
                     padding='same')(ff_input)
-    ff_out = BatchNormalization(axis=3)(ff_out)
-    out = Add()([out, ff_out])
+    out = Add()([out, ff_input])
     return out
 
 
 def res_blk(x, filter_depth, num_layers):
-    if not BOTTLENECK:
-        num_layers -= 1
-        x = conv_blk(x, filter_depth, (2,2))
-
-    for i in range(num_layers):
+    x = conv_blk(x, filter_depth, (2,2))
+    for i in range(num_layers-1):
         x = ident_blk(x, filter_depth)
     return x
 
@@ -85,7 +83,7 @@ def ResNet_N(in_shape, layers, classes):
                kernel_initializer='he_normal',
                padding='same',
                strides=2)(x)
-               
+
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
 
