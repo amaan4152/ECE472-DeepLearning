@@ -56,7 +56,9 @@ def main():
 	train_data, train_labels = train
 	test_data, test_labels = test
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
-
+	plt.imshow(train_data[0])
+	plt.savefig("img_00.png")
+	exit(1)
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
 					 layers = [3, 4, 6, 3], 
