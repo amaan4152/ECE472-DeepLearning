@@ -51,7 +51,7 @@ def conv_blk(input, filter_depth, stride):
     out = Dropout(0.5)(out)
     ff_input = BatchNormalization(axis=3)(ff_input)
     ff_input = Activation('elu')(ff_input)
-    ff_input = Conv2D(filter_depth,
+    ff_input = Conv2D(4 * filter_depth,
                     kernel_size=(1,1),
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.00001),
