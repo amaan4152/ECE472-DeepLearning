@@ -17,7 +17,7 @@ def basic_blk(input, k, f, s):
                 kernel_size = k[0],
                 kernel_initializer = 'he_normal',  
                 kernel_regularizer = regularizers.l2(l2=0.00001),
-                padding = 'same',
+                padding = 'valid',
                 strides = s)(out)
 
     out = BatchNormalization(axis=3, momentum=0.9)(out)
@@ -35,7 +35,7 @@ def basic_blk(input, k, f, s):
                     kernel_size = k[2],
                     kernel_initializer = 'he_normal',
                     kernel_regularizer = regularizers.l2(l2=0.00001),
-                    padding = 'same')(out)
+                    padding = 'valid')(out)
     return out
 
 def ident_blk(input, filter_depth):
@@ -56,7 +56,7 @@ def conv_blk(input, filter_depth, stride):
                     kernel_initializer='he_normal',
                     kernel_regularizer=regularizers.l2(l2=0.00001),
                     strides=stride,
-                    padding='same')(ff_input)
+                    padding='valid')(ff_input)
     out = Add()([out, ff_input])
     return out
 
@@ -87,11 +87,8 @@ def ResNet_N(in_shape, layers, classes):
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
 
-    for i in range(layers[0]):
-        x = ident_blk(x, filter_depth)
-
-    for i in range(len(layers[1:])):
-        x = res_blk(x, (i + 2)*filter_depth, layers[i+1])
+    for i in range(len(layers)):
+        x = res_blk(x, (i + 1)*filter_depth, layers[i])
 
     x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
