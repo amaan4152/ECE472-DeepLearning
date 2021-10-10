@@ -70,7 +70,7 @@ def res_blk(x, filter_depth, num_layers, init_stride):
 
 
 def ResNet_N(in_shape, layers, classes):
-    filter_depth = 64
+    filter_depth = 16
     input = Input(in_shape)
 
     # Preprocessing method: RANDOM CROP
