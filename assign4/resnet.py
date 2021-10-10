@@ -93,7 +93,7 @@ def ResNet_N(in_shape, layers, classes):
     for i in range(len(layers[1:])):
         x = res_blk(x, (i + 2)*filter_depth, layers[i + 1], init_stride=2)
 
-    x = AveragePooling2D()(x)
+    x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     #x = Dropout(0.3)(x)
     x = Dense(classes, activation='softmax', kernel_initializer='he_normal')(x)
