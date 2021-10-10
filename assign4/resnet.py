@@ -12,7 +12,7 @@ BOTTLENECK = True
 def basic_blk(input, k, f, s):
     out = BatchNormalization(axis=3, momentum=0.9)(input)
     out = Activation('elu')(out)
-    out = Dropout(0.5)(out)
+    #out = Dropout(0.5)(out)
     out = Conv2D(filters = f,
                 kernel_size = k[0],
                 kernel_initializer = 'he_normal',  
@@ -48,7 +48,7 @@ def ident_blk(input, filter_depth):
 def conv_blk(input, filter_depth, stride):
     ff_input = input
     out = basic_blk(input, (1,3,1), filter_depth, stride)
-    out = Dropout(0.5)(out)
+    #out = Dropout(0.5)(out)
     ff_input = BatchNormalization(axis=3)(ff_input)
     ff_input = Activation('elu')(ff_input)
     ff_input = Conv2D(4 * filter_depth,
