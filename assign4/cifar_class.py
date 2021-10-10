@@ -6,9 +6,9 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-CIFAR_TYPE = 10
+CIFAR_TYPE = 100
 BATCH_SIZE = 32
-EPOCHS = 200
+EPOCHS = 500
 
 # CIFAR_10
 dataset_10 = {
@@ -41,7 +41,7 @@ def plot_diagnostics(history):
 	plt.legend()
 	plt.tight_layout()
 	# save plot to file
-	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/DPE2_1_cifar10_plot_' + str(getpid()) + '.png')
+	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/EXP1_cifar100_plot_' + str(getpid()) + '.png')
 	plt.close()
 
 
@@ -67,7 +67,7 @@ def main():
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["accuracy", "top_k_categorical_accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', min_lr=1e-4, verbose=1)

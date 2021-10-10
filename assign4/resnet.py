@@ -5,7 +5,7 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, Rando
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 import numpy as np
 
-BOTTLENECK = False
+BOTTLENECK = True
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
