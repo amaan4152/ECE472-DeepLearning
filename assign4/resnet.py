@@ -40,7 +40,7 @@ def ident_blk(input, filter_depth):
     ff_input = input
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
-    # out = Dropout(0.4)(out)
+    out = Dropout(0.4)(out)
     return out
 
 
@@ -55,7 +55,7 @@ def conv_blk(input, filter_depth, stride):
                     padding='same')(ff_input)
     ff_out = BatchNormalization(axis=3)(ff_out)
     out = Add()([out, ff_out])
-    # out = Dropout(0.5)(out)
+    out = Dropout(0.5)(out)
     return out
 
 
