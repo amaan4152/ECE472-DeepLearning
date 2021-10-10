@@ -16,7 +16,7 @@ def basic_blk(input, k, f, s):
                 kernel_initializer = 'he_normal',  
                 kernel_regularizer = regularizers.l2(l2=0.0001),
                 padding = 'same',
-                strides = s)(out)
+                strides = s)(input)
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out) 
 
