@@ -22,6 +22,7 @@ def basic_blk(input, k, f, s):
     
     out = BatchNormalization(axis=3, momentum=0.9)(out)
     out = Activation('elu')(out) 
+    out = Dropout(0.4)(out)
     out = Conv2D(filters = f,
                 kernel_size = k[1],
                 kernel_initializer = 'he_normal',
@@ -31,6 +32,7 @@ def basic_blk(input, k, f, s):
     if BOTTLENECK:
         out = BatchNormalization(axis=3, momentum=0.9)(out)
         out = Activation('elu')(out) 
+        out = Dropout(0.3)(out)
         out = Conv2D(filters = (4 * f),
                     kernel_size = k[2],
                     kernel_initializer = 'he_normal',
