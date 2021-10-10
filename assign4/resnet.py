@@ -5,7 +5,7 @@ from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, Rando
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 import numpy as np
 
-BOTTLENECK = False
+BOTTLENECK = True
 
 # https://www.analyticsvidhya.com/blog/2021/08/how-to-code-your-resnet-from-scratch-in-tensorflow/
 # https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf
@@ -40,7 +40,7 @@ def basic_blk(input, k, f, s):
 
 def ident_blk(input, filter_depth):
     ff_input = input
-    out = basic_blk(input, (3,3), filter_depth, (1,1))
+    out = basic_blk(input, (1,3,1), filter_depth, (1,1))
     out = Add()([out, ff_input])
     return out
 
@@ -85,7 +85,7 @@ def ResNet_N(in_shape, layers, classes):
                kernel_initializer='he_normal',
                padding='same',
                strides=2)(x)
-
+               
     x = BatchNormalization(axis=3, momentum=0.9)(x)
     x = Activation('elu')(x)
 
@@ -99,6 +99,6 @@ def ResNet_N(in_shape, layers, classes):
     x = Flatten()(x)
     x = Dropout(0.3)(x)
     x = Dense(classes, activation='softmax')(x)
-    model = Model(inputs=input, outputs=x, name=('ResNet-' + str(np.sum(layers) + 2)))
+    model = Model(inputs=input, outputs=x, name=('ResNet-' + str(3*np.sum(layers) + 2)))
 
     return model

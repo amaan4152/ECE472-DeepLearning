@@ -1,14 +1,13 @@
 from tensorflow.python.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
 from matplotlib import pyplot as plt
-from tensorflow.python.keras.utils.generic_utils import class_and_config_for_serialized_keras_object
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-CIFAR_TYPE = 10
+CIFAR_TYPE = 100
 BATCH_SIZE = 32
-EPOCHS = 200
+EPOCHS = 500
 
 # CIFAR_10
 dataset_10 = {
@@ -52,7 +51,7 @@ def main():
 	elif CIFAR_TYPE == 100:
 		dataset = dataset_100
 
-	cifar_parser = Parser(dataset, 'CIFAR_10')
+	cifar_parser = Parser(dataset, 'CIFAR_100')
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
@@ -60,14 +59,14 @@ def main():
 
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
-					 layers = [2, 2, 2, 2], 
-					 classes = 10) 
+					 layers = [3, 4, 6, 3], 
+					 classes = 100) 
 	model.summary()
 
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+	model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["top_k_categorical_accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', min_lr=1e-4, verbose=1)
