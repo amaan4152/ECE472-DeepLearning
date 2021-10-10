@@ -27,12 +27,13 @@ class Parser(object):
                         self.labels_set.append(
                             np.fromfile(f, dtype=np.dtype(np.uint8)).newbyteorder(">")
                         )
-        elif self.type == 'CIFAR':  # dataset follows a dictionary construct based on training and test
+        elif 'CIFAR' in self.type:  # dataset follows a dictionary construct based on training and test
             # https://mattpetersen.github.io/load-cifar10-with-numpy
+            labels = b'labels' if '10' in self.type else b'fine_labels'
             for k, v in self.dataset.items(): 
                 batch_dict = self.__unpickle(self.dataset[k])
                 self.images_set.append(np.transpose(batch_dict[b'data'].reshape(len(batch_dict[b'data']), 3, 32, 32), (0, 2, 3, 1))/255.)
-                self.labels_set.append(batch_dict[b'labels'])
+                self.labels_set.append(batch_dict[labels])
 
         return ((np.concatenate([*self.images_set[:-1]]), np.array(self.labels_set[:-1]).flatten()), (self.images_set[-1], np.array(self.labels_set[-1]).flatten()))
 

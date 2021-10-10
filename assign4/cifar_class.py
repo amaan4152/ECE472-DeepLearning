@@ -6,7 +6,7 @@ from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-CIFAR_TYPE = 100
+CIFAR_TYPE = 10
 BATCH_SIZE = 32
 EPOCHS = 200
 
@@ -51,7 +51,7 @@ def main():
 		dataset = dataset_10
 	elif CIFAR_TYPE == 100:
 		dataset = dataset_100
-		
+
 	cifar_parser = Parser(dataset, 'CIFAR')
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
