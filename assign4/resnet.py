@@ -40,9 +40,10 @@ def basic_blk(input, k, f, s):
 
 def ident_blk(input, filter_depth):
     ff_input = input
-    out = basic_blk(input, (1,3,1), filter_depth, (1,1))
+    out = Dropout(0.2)(input)
+    out = basic_blk(out, (1,3,1), filter_depth, (1,1))
     out = Add()([out, ff_input])
-    #out = SpatialDropout2D(0.5)(out)
+    out = SpatialDropout2D(0.5)(out)
     return out
 
 
@@ -58,7 +59,6 @@ def conv_blk(input, filter_depth, stride):
                     strides=stride,
                     padding='same')(ff_input)
     out = Add()([out, ff_input])
-    #out = SpatialDropout2D(0.5)(out)
     return out
 
 
