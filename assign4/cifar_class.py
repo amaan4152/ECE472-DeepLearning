@@ -40,7 +40,7 @@ def plot_diagnostics(history):
 	plt.legend()
 	plt.tight_layout()
 	# save plot to file
-	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/DPE2_1_cifar10_plot_' + str(getpid()) + '.png')
+	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/E1_cifar100_plot_' + str(getpid()) + '.png')
 	plt.close()
 
 
@@ -59,7 +59,7 @@ def main():
 
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
-					 layers = [3, 4, 6, 3], 
+					 layers = [3, 4, 23, 3], 
 					 classes = 100) 
 	model.summary()
 
