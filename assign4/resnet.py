@@ -40,7 +40,8 @@ def basic_blk(input, k, f, s):
 
 def ident_blk(input, filter_depth):
     ff_input = input
-    out = basic_blk(input, (3,3), filter_depth, (1,1))
+    out = Dropout(0.5)(input)
+    out = basic_blk(out, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
     out = SpatialDropout2D(0.5)(out)
     return out
