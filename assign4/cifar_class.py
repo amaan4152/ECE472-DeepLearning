@@ -60,6 +60,7 @@ def gen_data(cifar_type):
 	# shuffle data
 	sss = StratifiedShuffleSplit(n_splits=0, random_state=42)
 	train_ind = sss.split(train_data, train_labels)
+	print(train_ind)
 	return train_data[train_ind], train_labels[train_ind], test_data, test_labels
 
 
