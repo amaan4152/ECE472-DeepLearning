@@ -63,6 +63,7 @@ def gen_data(cifar_type):
 	for train_ind in sss.split(train_data, train_labels):
 		print(train_ind[0].shape)
 		print(train_data.shape)
+		print(train_labels.shape)
 		train_x, train_y = train_data[train_ind], train_labels[train_ind]
 	return train_x, train_y, test_data, test_labels
 
