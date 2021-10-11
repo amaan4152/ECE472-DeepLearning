@@ -59,12 +59,9 @@ def gen_data(cifar_type):
 	test_labels = to_categorical(test_labels)
 
 	# shuffle data
-	sss = StratifiedShuffleSplit(n_splits=2, random_state=42)
+	sss = StratifiedShuffleSplit(n_splits=1, random_state=42)
 	train_ind = sss.split(train_data, train_labels)
 	for train_ind in sss.split(train_data, train_labels):
-		print(np.array(train_ind).shape)
-		print(train_data.shape)
-		print(train_labels.shape)
 		train_x, train_y = train_data[train_ind], train_labels[train_ind]
 	return train_x, train_y, test_data, test_labels
 
