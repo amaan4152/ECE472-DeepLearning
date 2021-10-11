@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
+import numpy as np
 
 BATCH_SIZE = 128
 EPOCHS = 200
@@ -61,7 +62,7 @@ def gen_data(cifar_type):
 	sss = StratifiedShuffleSplit(n_splits=2, random_state=42)
 	train_ind = sss.split(train_data, train_labels)
 	for train_ind in sss.split(train_data, train_labels):
-		print(train_ind[0].shape)
+		print(np.array(train_ind).shape)
 		print(train_data.shape)
 		print(train_labels.shape)
 		train_x, train_y = train_data[train_ind], train_labels[train_ind]
