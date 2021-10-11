@@ -1,15 +1,13 @@
 from tensorflow.python.keras.callbacks import ReduceLROnPlateau
-from tensorflow.keras.metrics import TopKCategoricalAccuracy
+from sklearn.model_selection import StratifiedShuffleSplit
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import to_categorical
-import tensorflow as tf
 from matplotlib import pyplot as plt
 from resnet import ResNet_N
 from darse import Parser
 from os import getpid
 
-CIFAR_TYPE = 100
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 EPOCHS = 200
 
 # CIFAR_10
@@ -46,31 +44,40 @@ def plot_diagnostics(history):
 	plt.savefig('/zooper2/amaan.rahman/ECE472-DeepLearning/assign4/E1_cifar100_plot_' + str(getpid()) + '.png')
 	plt.close()
 
+def gen_data(cifar_type):
+	dataset = dataset_100 if cifar_type == "CIFAR_100" else dataset_10
 
-def main():
-	# dataset parse
-	if CIFAR_TYPE == 10:
-		dataset = dataset_10
-	elif CIFAR_TYPE == 100:
-		dataset = dataset_100
-
-	cifar_parser = Parser(dataset, 'CIFAR_100')
+	# parse
+	cifar_parser = Parser(dataset, cifar_type)
 	train, test = cifar_parser.parse()
 	train_data, train_labels = train
 	test_data, test_labels = test
-	train_labels = to_categorical(train_labels, num_classes=100)
-	test_labels = to_categorical(test_labels, num_classes=100)
+
+	# convert labels to one-hot format
+	train_labels = to_categorical(train_labels)
+	test_labels = to_categorical(test_labels)
+
+	# shuffle data
+	sss = StratifiedShuffleSplit(n_splits=0, random_state=42)
+	train_ind = sss.split(train_data, train_labels)
+	return train_data[train_ind], train_labels[train_ind], test_data, test_labels
+
+
+def main():
+	# dataset parse
+	train_data, train_labels, test_data, test_labels = gen_data("CIFAR_100")
 	STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
+
 	# model init
 	model = ResNet_N(in_shape = (test_data.shape[1], test_data.shape[2], 3), 
-					 layers = [3, 4, 6, 3], 
+					 layers = [2, 2, 2, 2], 
 					 classes = 100) 
 	model.summary()
 
 	# model compile
 	# https://towardsdatascience.com/super-convergence-with-cyclical-learning-rates-in-tensorflow-c1932b858252
 	# https://arxiv.org/pdf/1506.01186.pdf
-	model.compile(optimizer=Adam(), loss="categorical_crossentropy", metrics=[TopKCategoricalAccuracy(), "accuracy"])
+	model.compile(optimizer=Adam(), loss="categorical_crossentropy", metrics=["top_k_categorical_accuracy", "accuracy"])
 
 	# fit
 	callback = ReduceLROnPlateau(monitor='val_loss', min_lr=1e-4, verbose=1)
