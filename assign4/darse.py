@@ -29,7 +29,7 @@ class Parser(object):
                         )
         elif 'CIFAR' in self.type:  # dataset follows a dictionary construct based on training and test
             # https://mattpetersen.github.io/load-cifar10-with-numpy
-            labels = b'fine_labels' if ('100' in self.type) else b'labels'
+            labels = b'fine_labels' if (self.type == 'CIFAR_100') else b'labels'
             for k, v in self.dataset.items(): 
                 batch_dict = self.__unpickle(self.dataset[k])
                 self.images_set.append(np.transpose(batch_dict[b'data'].reshape(len(batch_dict[b'data']), 3, 32, 32), (0, 2, 3, 1))/255.)

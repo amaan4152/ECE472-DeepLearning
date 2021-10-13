@@ -1,6 +1,7 @@
 from tensorflow.keras.models import Model
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, BatchNormalization, Activation, Add, Input, ZeroPadding2D, GlobalAveragePooling2D
+from tensorflow.python.keras.layers.core import SpatialDropout2D
 from tensorflow.keras.layers.experimental.preprocessing import RandomCrop, RandomFlip
 from tensorflow.python.keras.layers.preprocessing.image_preprocessing import HORIZONTAL
 import numpy as np
@@ -42,12 +43,13 @@ def ident_blk(input, filter_depth):
     ff_input = input
     out = basic_blk(input, (3,3), filter_depth, (1,1))
     out = Add()([out, ff_input])
+    out = SpatialDropout2D(0.5)(out)
     return out
 
 
 def conv_blk(input, filter_depth, stride):
     ff_input = input
-    out = basic_blk(input, (1,3), filter_depth, stride)
+    out = basic_blk(input, (3,3), filter_depth, stride)
     out = Dropout(0.5)(out)
     ff_out = Conv2D(filter_depth,
                     kernel_size=(1,1),
