@@ -2,6 +2,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.utils.np_utils import to_categorical
+from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Embedding, Conv1D, MaxPooling1D, Flatten, Dense
 import numpy as np
 import re
@@ -9,7 +10,9 @@ import re
 from parser import CLI_Parser
 from parser import Parser
 
-from tensorflow.python.ops.gen_array_ops import Empty
+
+BATCH_SIZE = 32
+EPOCHS = 10
 
 # takes in pandas dataframe of text data
 # https://medium.com/@saitejaponugoti/nlp-natural-language-processing-with-tensorflow-b2751aa8c460
@@ -46,26 +49,24 @@ def main():
     parser = Parser(args.train, args.test)
     train, test = parser._getAtrributes()
     train_data, train_labels, train_size, max_len, test_data, test_labels = text_processing(train, test)
+    STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
-    input = Input(train_data.shape)
-    x = input
-    x = Embedding(input_dim = train_size,
+
+    model = Sequential()
+    model.add(Embedding(input_dim = train_size,
                   output_dim = 100,
-                  input_length = max_len)(x)
-
-    x = Conv1D(filters = 128,
-               kernel_size = 4,
-               activation = 'relu',
-               kernel_initializer = 'he_normal')(x)
+                  input_length = max_len))
+    model.add(Conv1D(filters = 128,
+                     kernel_size = 4,
+                     activation = 'relu',
+                     kernel_initializer = 'he_normal'))
+    model.add(MaxPooling1D())
+    model.add(Flatten())
+    model.add(Dense(units = 100,
+              activation = 'relu'))
+    model.add(Dense(units = 4,
+              activation = 'relu'))
     
-    x = MaxPooling1D()(x)
-    x = Flatten()(x)
-    x = Dense(units = 100,
-              activation = 'relu')(x)
-
-    x = Dense(units = 4,
-              activation = 'relu')(x)
-    model = Model(inputs=input, outputs=x)
     model.summary()
 
     # compile and fit
