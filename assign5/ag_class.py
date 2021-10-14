@@ -12,9 +12,9 @@ from parser import CLI_Parser
 from parser import Parser
 from encoder import Encoder, PositionalEncoder
 
-BATCH_SIZE = 512
+BATCH_SIZE = 1024
 EPOCHS = 5
-EMBED_DIMS = 32
+EMBED_DIMS = 100
 
 # https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
 def plot_diagnostics(history):
