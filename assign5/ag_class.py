@@ -73,7 +73,7 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = LSTM(25)(x)
+    x = GRU(units = 25, dropout = 0.15, go_backwards=True)(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
                kernel_size = 2,
