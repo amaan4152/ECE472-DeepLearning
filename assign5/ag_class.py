@@ -89,25 +89,25 @@ def main():
                 feed_forward_dims = [128, EMBED_DIMS])(x)
     x = SpatialDropout1D(0.2)(x)
     x = Conv1D(filters = 32,
-               kernel_size = 2,
+               kernel_size = 1,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
     x = SpatialDropout1D(0.3)(x)
     x = Conv1D(filters = 64,
-               kernel_size = 4,
+               kernel_size = 2,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
     x = SpatialDropout1D(0.4)(x)
     x = Conv1D(filters = 128,
-               kernel_size = 8,
+               kernel_size = 3,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
     x = SpatialDropout1D(0.5)(x)
     x = Conv1D(filters = 256,
-               kernel_size = 8,
+               kernel_size = 4,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
