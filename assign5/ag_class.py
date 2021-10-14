@@ -3,7 +3,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.layers.pooling import GlobalAveragePooling1D
 from tensorflow.python.keras.utils.np_utils import to_categorical
 from tensorflow.keras import Model
-from tensorflow.keras.layers import Input, Conv1D, Flatten, Dense, SpatialDropout1D, Dropout, Embedding, LSTM, SimpleRNN, GRU
+from tensorflow.keras.layers import Input, Conv1D, Flatten, Dense, SpatialDropout1D, Dropout, LSTM, SimpleRNN, GRU
 from tensorflow.keras import regularizers
 import matplotlib.pyplot as plt
 
@@ -70,13 +70,21 @@ def main():
     STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
     input = Input(max_len)
-    x = Embedding(input_dim = train_size, output_dim = EMBED_DIMS)(input)
+    x = PositionalEncoder(vocab_size = train_size,
+                          max_len = max_len, 
+                          embedded_dims = EMBED_DIMS)(input)
     x = SpatialDropout1D(0.8)(x)
-    x = Conv1D(filters = 512,
+    x = Conv1D(filters = 1024,
                kernel_size = 2,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.001))(x)
+    x = SpatialDropout1D(0.5)(x)
+    x = Conv1D(filters = 128,
+               kernel_size = 1,
+               activation = 'elu',
+               kernel_initializer = 'he_normal', 
+               kernel_regularizer = regularizers.l2(0.00001))(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.5)(x)
