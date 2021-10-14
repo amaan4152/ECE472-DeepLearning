@@ -26,8 +26,8 @@ def text_processing(train, test):
     test_data, test_labels = test[-2::-1]
     train_labels = to_categorical(train_labels - 1)
     test_labels = to_categorical(test_labels - 1)
-    train_data = [re.sub(r'[^a-z\d]', '', string.lower()) for string in train_data]
-    test_data = [re.sub(r'[^a-z\d]', '', string.lower()) for string in test_data]
+    train_data = [re.sub(r'[^a-z\d\s]', '', string.lower().split()) for string in train_data]
+    test_data = [re.sub(r'[^a-z\d\s]', '', string.lower().split()) for string in test_data]
     max_len = len(max(train_data, key=len).split())
     #word_tokenizer = Tokenizer(oov_token='<OOV>')
     #word_tokenizer.fit_on_texts(train_data)
