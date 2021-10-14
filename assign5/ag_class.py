@@ -13,7 +13,7 @@ from encoder import Encoder, PositionalEncoder
 
 BATCH_SIZE = 256
 EPOCHS = 10
-EMBED_DIMS = 32
+EMBED_DIMS = 100
 
 # takes in pandas dataframe of text data
 # https://medium.com/@saitejaponugoti/nlp-natural-language-processing-with-tensorflow-b2751aa8c460
