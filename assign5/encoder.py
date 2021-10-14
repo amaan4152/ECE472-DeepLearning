@@ -45,7 +45,7 @@ class Encoder(layers.Layer):
                     )]
         )
 
-    def __call__(self, input):
+    def call(self, input):
         x = self.Attention(input, input)
         x = self.Norm1(Add(input, x))
         input = x
@@ -60,7 +60,7 @@ class PositionalEncoder(layers.Layer):
         self.word_embedding = Embedding(input_dim = vocab_size, output_dim = embedded_dims)
         self.pos_embedding = Embedding(input_dim = max_len, output_dim = embedded_dims)
 
-    def __call__(self, x):  
+    def call(self, x):  
         max_len = shape(x)[-1]
         pos = range(start = 0, limit = max_len, delta = 0)
         pos = self.pos_embedding(pos)
