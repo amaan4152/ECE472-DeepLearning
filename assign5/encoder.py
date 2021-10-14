@@ -63,7 +63,7 @@ class PositionalEncoder(layers.Layer):
 
     def call(self, x):  
         max_len = shape(x)[-1]
-        pos = range(start = 0, limit = max_len, delta = 0)
+        pos = range(start = 0, limit = max_len, delta = 1)
         pos = self.pos_embedding(pos)
         x = self.word_embedding(x)
         x += pos
