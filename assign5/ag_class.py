@@ -12,7 +12,7 @@ from parser import CLI_Parser
 from parser import Parser
 from encoder import Encoder, PositionalEncoder
 
-BATCH_SIZE = 1024
+BATCH_SIZE = 512
 EPOCHS = 5
 EMBED_DIMS = 100
 
@@ -32,7 +32,7 @@ def plot_diagnostics(history):
     plt.tight_layout()
     # save plot to file
     plt.savefig(
-        "/zooper2/amaan.rahman/ECE472-DeepLearning/assign5/ENC_diagnostics_plot_00.png"
+        "/zooper2/amaan.rahman/ECE472-DeepLearning/assign5/diagnostics_plot_00.png"
     )
     plt.close()
 
@@ -74,10 +74,6 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = SpatialDropout1D(0.8)(x)
-    x = Encoder(num_heads = 10, 
-                embedded_dims = EMBED_DIMS, 
-                feed_forward_dims = [32, EMBED_DIMS])(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
                kernel_size = 4,
