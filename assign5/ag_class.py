@@ -25,7 +25,7 @@ def text_processing(train, test):
     train_labels = to_categorical(train_labels - 1)
     test_labels = to_categorical(test_labels - 1)
 
-    word_tokenizer = Tokenizer(oov_token='<OOV>', char_level=True)
+    word_tokenizer = Tokenizer(oov_token='<OOV>')
     word_tokenizer.fit_on_texts(train_data)
     train_data = word_tokenizer.texts_to_sequences(train_data)
     test_data = word_tokenizer.texts_to_sequences(test_data)
@@ -94,28 +94,16 @@ def main():
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
-    x = SpatialDropout1D(0.3)(x)
-    x = Conv1D(filters = 64,
-               kernel_size = 2,
-               activation = 'elu',
-               kernel_initializer = 'he_normal', 
-               kernel_regularizer = regularizers.l2(0.0001))(x)
-    x = SpatialDropout1D(0.4)(x)
-    x = Conv1D(filters = 128,
-               kernel_size = 3,
-               activation = 'elu',
-               kernel_initializer = 'he_normal', 
-               kernel_regularizer = regularizers.l2(0.0001))(x)
-    x = SpatialDropout1D(0.5)(x)
+    x = SpatialDropout1D(0.75)(x)
     x = Conv1D(filters = 256,
-               kernel_size = 4,
+               kernel_size = 5,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
-    x = Dense(50, activation='elu')(x)
+    x = Dense(1000, activation='elu')(x)
     x = Dropout(0.1)(x)
     x = Dense(4, activation='softmax')(x)
 
