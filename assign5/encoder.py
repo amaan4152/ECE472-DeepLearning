@@ -30,13 +30,11 @@ class Encoder(layers.Layer):
         self.Norm2 = LayerNormalization(epsilon = eps)
         
         self.FC = Sequential(
-                    Dropout(dropout_rate),
-                    [Dense(
+                    [Dropout(dropout_rate), Dense(
                         units = width,
                         activation = 'elu',
                         kernel_initializer = 'he_normal',
-                        kernel_regularizer = regularizers.l2(0.00001)
-                    ) for width in feed_forward_dims]
+                        kernel_regularizer = regularizers.l2(0.00001)) for width in feed_forward_dims]
         )
 
     def __call__(self, input):
