@@ -2,18 +2,38 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.layers.pooling import GlobalAveragePooling1D
 from tensorflow.python.keras.utils.np_utils import to_categorical
-from tensorflow.keras import Sequential, Model
-from tensorflow.keras.layers import Input, Embedding, Conv1D, MaxPooling1D, Flatten, Dense, SpatialDropout1D, Dropout, LSTM, SimpleRNN, GRU
+from tensorflow.keras import Model
+from tensorflow.keras.layers import Input, Conv1D, Flatten, Dense, SpatialDropout1D, Dropout, LSTM, SimpleRNN, GRU
 from tensorflow.keras import regularizers
+import matplotlib.pyplot as plt
 
 from parser import CLI_Parser
 from parser import Parser
-from resnet1D import ResNet_N
 from encoder import Encoder, PositionalEncoder
 
 BATCH_SIZE = 512
 EPOCHS = 10
 EMBED_DIMS = 100
+
+# https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
+def plot_diagnostics(history):
+    # plot loss
+    plt.subplot(211)
+    plt.title("Cross Entropy Loss")
+    plt.plot(history.history["loss"], color="blue", label="train")
+    plt.plot(history.history["val_loss"], color="orange", label="validation")
+    # plot accuracy
+    plt.subplot(212)
+    plt.title("Classification Accuracy")
+    plt.plot(history.history["accuracy"], color="blue", label="train")
+    plt.plot(history.history["val_accuracy"], color="orange", label="validation")
+    plt.legend()
+    plt.tight_layout()
+    # save plot to file
+    plt.savefig(
+        "/zooper2/amaan.rahman/ECE472-DeepLearning/assign5/diagnostics_plot_00.png"
+    )
+    plt.close()
 
 # takes in pandas dataframe of text data
 # https://medium.com/@saitejaponugoti/nlp-natural-language-processing-with-tensorflow-b2751aa8c460
@@ -49,48 +69,16 @@ def main():
     train_data, train_labels, train_size, max_len, test_data, test_labels = text_processing(train, test)
     STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
-    """model = ResNet_N(doc_size = train_size,
-                     max_len = max_len,
-                     layers = [2, 2, 2, 2],
-                     classes = 4)"""
-    """
-    model = Sequential()
-    model.add(Embedding(input_dim = train_size,
-                  output_dim = 32,
-                  input_length = max_len))
-    model.add(GRU(128, return_sequences=True))
-    model.add(SimpleRNN(64, return_sequences=True))
-    model.add(SpatialDropout1D(0.5))
-    model.add(Conv1D(filters = 128,
-                     kernel_size = 5,
-                     strides = 2,
-                     activation = 'elu',
-                     kernel_initializer = 'he_normal',
-                     kernel_regularizer=regularizers.l2(0.001)))
-    model.add(SpatialDropout1D(0.5))
-    model.add(Conv1D(filters = 128,
-                     kernel_size = 5,
-                     activation = 'elu',
-                     kernel_initializer = 'he_normal',
-                     kernel_regularizer=regularizers.l2(0.001)))
-    model.add(MaxPooling1D(padding='same'))
-    model.add(Flatten())
-    model.add(Dropout(0.5))
-    model.add(Dropout(0.25))
-    model.add(Dense(units = 4,
-              activation = 'softmax'))
-    """
-
     input = Input(max_len)
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
-               kernel_size = 4,
+               kernel_size = 2,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
-               kernel_regularizer = regularizers.l2(0.0001))(x)
+               kernel_regularizer = regularizers.l2(0.001))(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.5)(x)
@@ -103,7 +91,7 @@ def main():
 
     # compile and fit
     model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=['accuracy'])
-    model.fit(
+    history = model.fit(
 			x=train_data,
 			y=train_labels,
 			batch_size=BATCH_SIZE,
@@ -113,7 +101,7 @@ def main():
 	)
 
     model.evaluate(x=test_data, y=test_labels)
-
+    plot_diagnostics(history)
 
 if __name__ == "__main__":
     main()
