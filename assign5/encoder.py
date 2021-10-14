@@ -25,19 +25,19 @@ class Encoder(layers.Layer):
         eps = 1e-9
         dropout_rate = 0.3
 
-        self.Attention = MultiHeadAttention(num_heads = num_heads, key_dim = embedded_dims)
-        self.Norm1 = LayerNormalization(epsilon = eps)
-        self.Norm2 = LayerNormalization(epsilon = eps)
+        self.Attention = layers.MultiHeadAttention(num_heads = num_heads, key_dim = embedded_dims)
+        self.Norm1 = layers.LayerNormalization(epsilon = eps)
+        self.Norm2 = layers.LayerNormalization(epsilon = eps)
         
         self.FC = Sequential(
-                    Dropout(dropout_rate),
-                    [Dense(
+                    layers.Dropout(dropout_rate),
+                    [layers.Dense(
                         units = feed_forward_dims[0],
                         activation = 'elu',
                         kernel_initializer = 'he_normal',
                         kernel_regularizer = regularizers.l2(0.00001)
                     ), 
-                    Dense(
+                    layers.Dense(
                         units = feed_forward_dims[1],
                         activation = 'elu',
                         kernel_initializer = 'he_normal',
@@ -47,24 +47,24 @@ class Encoder(layers.Layer):
 
     def call(self, input):
         x = self.Attention(input, input)
-        x = self.Norm1(Add(input, x))
+        x = self.Norm1(layers.Add(input, x))
         input = x
         x = self.FC(input)
-        x = self.Norm2(Add(input, x))
+        x = self.Norm2(layers.Add(input, x))
         
         return x
 
 class PositionalEncoder(layers.Layer):
     def __init__(self, vocab_size, max_len, embedded_dims):
         super(PositionalEncoder, self).__init__()
-        self.word_embedding = Embedding(input_dim = vocab_size, output_dim = embedded_dims)
-        self.pos_embedding = Embedding(input_dim = max_len, output_dim = embedded_dims)
+        self.word_embedding = layers.Embedding(input_dim = vocab_size, output_dim = embedded_dims)
+        self.pos_embedding = layers.Embedding(input_dim = max_len, output_dim = embedded_dims)
 
     def call(self, x):  
         max_len = shape(x)[-1]
         pos = range(start = 0, limit = max_len, delta = 0)
         pos = self.pos_embedding(pos)
         x = self.word_embedding(x)
-        x = Add(x, pos)
+        x = layers.Add(x, pos)
 
         return x
