@@ -14,7 +14,7 @@ from encoder import Encoder, PositionalEncoder
 
 BATCH_SIZE = 512
 EPOCHS = 5
-EMBED_DIMS = 256
+EMBED_DIMS = 32
 
 # https://machinelearningmastery.com/how-to-develop-a-cnn-from-scratch-for-cifar-10-photo-classification/
 def plot_diagnostics(history):
@@ -32,7 +32,7 @@ def plot_diagnostics(history):
     plt.tight_layout()
     # save plot to file
     plt.savefig(
-        "/zooper2/amaan.rahman/ECE472-DeepLearning/assign5/diagnostics_plot_00.png"
+        "/zooper2/amaan.rahman/ECE472-DeepLearning/assign5/ENC_diagnostics_plot_00.png"
     )
     plt.close()
 
