@@ -1,5 +1,6 @@
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.python.keras.engine.sequential import Sequential
 from tensorflow.python.keras.layers.pooling import GlobalAveragePooling1D
 from tensorflow.python.keras.utils.np_utils import to_categorical
 from tensorflow.keras import Model
@@ -73,7 +74,7 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = GRU(units = 25, dropout = 0.15, go_backwards=True)(x)
+    x = Sequential([GRU(25), SimpleRNN(10)])(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
                kernel_size = 2,
