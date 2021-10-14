@@ -79,7 +79,7 @@ def main():
     model.summary()
 
     # compile and fit
-    model.compile(loss="sparse_categorical_crossentropy", optimizer="adam", metrics=['accuracy'])
+    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=['accuracy'])
     model.fit(
 			x=train_data,
 			y=train_labels,
