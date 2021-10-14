@@ -26,15 +26,15 @@ def text_processing(train, test):
     test_data, test_labels = test[-2::-1]
     train_labels = to_categorical(train_labels - 1)
     test_labels = to_categorical(test_labels - 1)
-    train_data = [re.sub(r'[^a-z\d\s]', '', string.lower().split()) for string in train_data]
-    test_data = [re.sub(r'[^a-z\d\s]', '', string.lower().split()) for string in test_data]
+    train_data = [re.sub(r'[^a-z\d\s]', '', string.lower()) for string in train_data]
     max_len = len(max(train_data, key=len).split())
-    #word_tokenizer = Tokenizer(oov_token='<OOV>')
-    #word_tokenizer.fit_on_texts(train_data)
-    #train_data = word_tokenizer.texts_to_sequences(train_data)
-    #train_size = len(word_tokenizer.word_index) + 1 # +1 for unknown words
+
+    word_tokenizer = Tokenizer(oov_token='<OOV>')
+    word_tokenizer.fit_on_texts(train_data)
+    train_data = word_tokenizer.texts_to_sequences(train_data)
+    train_size = len(word_tokenizer.word_index) + 1 # +1 for unknown words
     train_data = pad_sequences(train_data, padding='post', maxlen=max_len)
-    #test_data = word_tokenizer.texts_to_sequences(test_data)
+    test_data = word_tokenizer.texts_to_sequences(test_data)
     test_data = pad_sequences(test_data, padding='post', maxlen=max_len)
     
     print("[END]: Processing successful.")
