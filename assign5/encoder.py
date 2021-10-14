@@ -47,7 +47,7 @@ class Encoder(layers.Layer):
 
     def call(self, input):
         x = self.Attention(input, input)
-        x = self.Norm1(Add(input, x))
+        x = self.Norm1(input + x)
         input = x
         x = self.FC(input)
         x = self.Norm2(input + x)
