@@ -11,7 +11,7 @@ from parser import Parser
 from resnet1D import ResNet_N
 from encoder import Encoder, PositionalEncoder
 
-BATCH_SIZE = 256
+BATCH_SIZE = 512
 EPOCHS = 10
 EMBED_DIMS = 100
 
