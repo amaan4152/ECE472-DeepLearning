@@ -20,7 +20,6 @@ import numpy as np
 # https://keras.io/examples/nlp/text_classification_with_transformer/
 class Encoder(layers.Layer):
     def __init__(self, num_heads, embedded_dims, feed_forward_dims: list):
-        super(Encoder, self).__init__()
 
         eps = 1e-9
         dropout_rate = 0.3
@@ -56,7 +55,6 @@ class Encoder(layers.Layer):
 
 class PositionalEncoder(layers.Layer):
     def __init__(self, vocab_size, max_len, embedded_dims):
-        super(PositionalEncoder, self).__init__()
         self.word_embedding = Embedding(input_dim = vocab_size, output_dim = embedded_dims)
         self.pos_embedding = Embedding(input_dim = max_len, output_dim = embedded_dims)
 
