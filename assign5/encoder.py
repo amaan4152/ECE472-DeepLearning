@@ -37,7 +37,7 @@ class Encoder(layers.Layer):
                         kernel_initializer = 'he_normal',
                         kernel_regularizer = regularizers.l2(0.00001)
                     ), 
-                    Dropout(dropout_rate),
+                    Dropout(dropout_rate * 2),
                     Dense(
                         units = feed_forward_dims[1],
                         activation = 'elu',

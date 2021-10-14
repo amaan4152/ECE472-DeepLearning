@@ -87,10 +87,34 @@ def main():
     x = Encoder(num_heads = 2,
                 embedded_dims = EMBED_DIMS,
                 feed_forward_dims = [128, EMBED_DIMS])(x)
+    x = SpatialDropout1D(0.2)(x)
+    x = Conv1D(filters = 32,
+               kernel_size = 2,
+               activation = 'elu',
+               kernel_initializer = 'he_normal', 
+               kernel_regularizer = regularizers.l2(0.0001))(x)
+    x = SpatialDropout1D(0.3)(x)
+    x = Conv1D(filters = 64,
+               kernel_size = 4,
+               activation = 'elu',
+               kernel_initializer = 'he_normal', 
+               kernel_regularizer = regularizers.l2(0.0001))(x)
+    x = SpatialDropout1D(0.4)(x)
+    x = Conv1D(filters = 128,
+               kernel_size = 8,
+               activation = 'elu',
+               kernel_initializer = 'he_normal', 
+               kernel_regularizer = regularizers.l2(0.0001))(x)
+    x = SpatialDropout1D(0.5)(x)
+    x = Conv1D(filters = 256,
+               kernel_size = 8,
+               activation = 'elu',
+               kernel_initializer = 'he_normal', 
+               kernel_regularizer = regularizers.l2(0.0001))(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
-    x = Dense(10, activation='elu')(x)
+    x = Dense(50, activation='elu')(x)
     x = Dropout(0.1)(x)
     x = Dense(4, activation='softmax')(x)
 
