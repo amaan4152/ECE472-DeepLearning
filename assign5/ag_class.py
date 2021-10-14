@@ -77,7 +77,6 @@ def main():
     x = Conv1D(filters = 512,
                kernel_size = 2,
                activation = 'elu',
-               kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.001))(x)
     x = SpatialDropout1D(0.5)(x)
     x = GlobalAveragePooling1D()(x)
