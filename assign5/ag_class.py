@@ -21,6 +21,8 @@ def text_processing(train, test):
     print("[START]: Processing text input...")
     train_data, train_labels = train[-2::-1]
     test_data, test_labels = test[-2::-1]
+    train_labels = to_categorical(train_labels - 1)
+    test_labels = to_categorical(test_labels - 1)
     train_data = [re.sub(r'[^a-z\d\s]', '', string.lower()) for string in train_data]
     max_len = len(max(train_data, key=len).split())
 
@@ -33,7 +35,7 @@ def text_processing(train, test):
     test_data = pad_sequences(test_data, padding='post', maxlen=max_len)
     
     print("[END]: Processing successful.")
-    return (train_data, train_labels - 1, train_size, max_len, test_data, test_labels - 1)
+    return (train_data, train_labels, train_size, max_len, test_data, test_labels)
 
 
 def main():
@@ -43,11 +45,11 @@ def main():
     train_data, train_labels, train_size, max_len, test_data, test_labels = text_processing(train, test)
     STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
-    """model = ResNet_N(doc_size = train_size,
+    model = ResNet_N(doc_size = train_size,
                      max_len = max_len,
                      layers = [1],
-                     classes = 4)"""
-
+                     classes = 4)
+    """
     model = Sequential()
     model.add(Embedding(input_dim = train_size,
                   output_dim = 32,
@@ -73,7 +75,7 @@ def main():
     model.add(Dropout(0.25))
     model.add(Dense(units = 4,
               activation = 'softmax'))
-    
+    """
     model.summary()
 
     # compile and fit
