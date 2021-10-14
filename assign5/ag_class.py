@@ -87,7 +87,7 @@ def main():
                           embedded_dims = EMBED_DIMS)(input)
     x = SpatialDropout1D(0.75)(x)
     x = Conv1D(filters = 512,
-               kernel_size = 5,
+               kernel_size = 8,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
                kernel_regularizer = regularizers.l2(0.0001))(x)
