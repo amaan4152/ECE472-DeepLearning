@@ -85,15 +85,6 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = Encoder(num_heads = 2,
-                embedded_dims = EMBED_DIMS,
-                feed_forward_dims = [128, EMBED_DIMS])(x)
-    x = SpatialDropout1D(0.2)(x)
-    x = Conv1D(filters = 32,
-               kernel_size = 1,
-               activation = 'elu',
-               kernel_initializer = 'he_normal', 
-               kernel_regularizer = regularizers.l2(0.0001))(x)
     x = SpatialDropout1D(0.75)(x)
     x = Conv1D(filters = 256,
                kernel_size = 5,
@@ -104,13 +95,7 @@ def main():
     x = Flatten()(x)
     x = Dropout(0.3)(x)
     x = Dense(1000, activation='elu')(x)
-    x = Dropout(0.3)(x)
-    x = Dense(500, activation='elu')(x)
-    x = Dropout(0.3)(x)
-    x = Dense(250, activation='elu')(x)
-    x = Dropout(0.3)(x)
-    x = Dense(10, activation='elu')(x)
-    x = Dropout(0.1)(x)
+    x = Dropout(0.15)(x)
     x = Dense(4, activation='softmax')(x)
 
     model = Model(inputs=input, outputs=x)
