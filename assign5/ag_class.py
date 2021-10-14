@@ -104,6 +104,12 @@ def main():
     x = Flatten()(x)
     x = Dropout(0.3)(x)
     x = Dense(1000, activation='elu')(x)
+    x = Dropout(0.3)(x)
+    x = Dense(500, activation='elu')(x)
+    x = Dropout(0.3)(x)
+    x = Dense(250, activation='elu')(x)
+    x = Dropout(0.3)(x)
+    x = Dense(10, activation='elu')(x)
     x = Dropout(0.1)(x)
     x = Dense(4, activation='softmax')(x)
 
