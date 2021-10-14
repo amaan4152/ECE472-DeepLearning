@@ -74,10 +74,9 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = SimpleRNN(64, return_state=True)(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
-               kernel_size = 2,
+               kernel_size = 4,
                activation = 'elu',
                kernel_regularizer = regularizers.l2(0.001))(x)
     x = GlobalAveragePooling1D()(x)
