@@ -81,14 +81,12 @@ def main():
     """
 
     input = Input(max_len)
-    pos_enc = PositionalEncoder(vocab_size = train_size,
+    x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
-                          embedded_dims = EMBED_DIMS)
-    x = pos_enc(input)
-    enc = Encoder(num_heads = 2,
+                          embedded_dims = EMBED_DIMS)(input)
+    x = Encoder(num_heads = 2,
                 embedded_dims = EMBED_DIMS,
-                feed_forward_dims = [128, 64, 32])
-    x = enc(x)
+                feed_forward_dims = [128, 64, 32])(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
