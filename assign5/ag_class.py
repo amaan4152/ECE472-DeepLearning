@@ -86,7 +86,7 @@ def main():
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
     x = SpatialDropout1D(0.75)(x)
-    x = Conv1D(filters = 256,
+    x = Conv1D(filters = 512,
                kernel_size = 5,
                activation = 'elu',
                kernel_initializer = 'he_normal', 
