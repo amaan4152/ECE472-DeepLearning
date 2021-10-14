@@ -74,7 +74,7 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
-    x = Sequential([GRU(25), SimpleRNN(10)])(x)
+    x = SimpleRNN(64, return_state=True)(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
                kernel_size = 2,
