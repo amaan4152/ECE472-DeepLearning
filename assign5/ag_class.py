@@ -1,17 +1,17 @@
 from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.utils.np_utils import to_categorical
 from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Input, Embedding, Conv1D, MaxPooling1D, Flatten, Dense
+from tensorflow.keras.layers import Input, Embedding, Conv1D, MaxPooling1D, Flatten, Dense, SpatialDropout1D, Dropout, LSTM, SimpleRNN, GRU
+from tensorflow.keras import regularizers
 import numpy as np
 import re
 
 from parser import CLI_Parser
 from parser import Parser
+from resnet1D import ResNet_N
 
-
-BATCH_SIZE = 32
+BATCH_SIZE = 256
 EPOCHS = 10
 
 # takes in pandas dataframe of text data
@@ -21,27 +21,19 @@ def text_processing(train, test):
     print("[START]: Processing text input...")
     train_data, train_labels = train[-2::-1]
     test_data, test_labels = test[-2::-1]
-    train_labels = to_categorical(train_labels)
-    test_labels = to_categorical(test_labels)
     train_data = [re.sub(r'[^a-z\d\s]', '', string.lower()) for string in train_data]
     max_len = len(max(train_data, key=len).split())
 
     word_tokenizer = Tokenizer(oov_token='<OOV>')
     word_tokenizer.fit_on_texts(train_data)
     train_data = word_tokenizer.texts_to_sequences(train_data)
-    train_data = pad_sequences(train_data, padding='post')
-    test_data = word_tokenizer.texts_to_sequences(test_data)
-    test_data = pad_sequences(test_data, padding='post')
-
-    train_data = np.array(train_data)
-    train_labels = np.array(train_labels)
-    test_data = np.array(test_data)
-    test_labels = np.array(test_labels)
     train_size = len(word_tokenizer.word_index) + 1 # +1 for unknown words
+    train_data = pad_sequences(train_data, padding='post', maxlen=max_len)
+    test_data = word_tokenizer.texts_to_sequences(test_data)
+    test_data = pad_sequences(test_data, padding='post', maxlen=max_len)
     
     print("[END]: Processing successful.")
-    return (train_data, train_labels, train_size, max_len, test_data, test_labels)
-
+    return (train_data, train_labels - 1, train_size, max_len, test_data, test_labels - 1)
 
 
 def main():
@@ -51,26 +43,41 @@ def main():
     train_data, train_labels, train_size, max_len, test_data, test_labels = text_processing(train, test)
     STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
+    """model = ResNet_N(doc_size = train_size,
+                     max_len = max_len,
+                     layers = [1],
+                     classes = 4)"""
 
     model = Sequential()
     model.add(Embedding(input_dim = train_size,
-                  output_dim = 100,
+                  output_dim = 32,
                   input_length = max_len))
+    model.add(GRU(128, return_sequences=True))
+    model.add(SimpleRNN(64, return_sequences=True))
+    model.add(SpatialDropout1D(0.5))
     model.add(Conv1D(filters = 128,
-                     kernel_size = 4,
-                     activation = 'relu',
-                     kernel_initializer = 'he_normal'))
-    model.add(MaxPooling1D())
+                     kernel_size = 5,
+                     strides = 2,
+                     activation = 'elu',
+                     kernel_initializer = 'he_normal',
+                     kernel_regularizer=regularizers.l2(0.001)))
+    model.add(SpatialDropout1D(0.5))
+    model.add(Conv1D(filters = 128,
+                     kernel_size = 5,
+                     activation = 'elu',
+                     kernel_initializer = 'he_normal',
+                     kernel_regularizer=regularizers.l2(0.001)))
+    model.add(MaxPooling1D(padding='same'))
     model.add(Flatten())
-    model.add(Dense(units = 100,
-              activation = 'relu'))
+    model.add(Dropout(0.5))
+    model.add(Dropout(0.25))
     model.add(Dense(units = 4,
-              activation = 'relu'))
+              activation = 'softmax'))
     
     model.summary()
 
     # compile and fit
-    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=['accuracy'])
+    model.compile(loss="sparse_categorical_crossentropy", optimizer="adam", metrics=['accuracy'])
     model.fit(
 			x=train_data,
 			y=train_labels,
@@ -79,6 +86,8 @@ def main():
 			steps_per_epoch=STEPS,
 			validation_split=0.2
 	)
+
+    model.evaluate(x=test_data, y=test_labels)
 
 
 if __name__ == "__main__":
