@@ -47,7 +47,7 @@ def main():
 
     model = ResNet_N(doc_size = train_size,
                      max_len = max_len,
-                     layers = [1],
+                     layers = [2, 2, 2, 2],
                      classes = 4)
     """
     model = Sequential()
