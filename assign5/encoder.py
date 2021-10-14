@@ -23,14 +23,15 @@ class Encoder(layers.Layer):
         super(Encoder, self).__init__()
 
         eps = 1e-9
-        dropout_rate = 0.06667
+        dropout_rate = 0.3
 
         self.Attention = MultiHeadAttention(num_heads = num_heads, key_dim = embedded_dims)
         self.Norm1 = LayerNormalization(epsilon = eps)
         self.Norm2 = LayerNormalization(epsilon = eps)
+        
         self.FC = Sequential(
-                    [   Dropout(dropout_rate * 1.5), 
-                        Dense(
+                    Dropout(dropout_rate),
+                    [Dense(
                         units = width,
                         activation = 'elu',
                         kernel_initializer = 'he_normal',
