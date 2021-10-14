@@ -86,7 +86,7 @@ def main():
                           embedded_dims = EMBED_DIMS)(input)
     x = Encoder(num_heads = 2,
                 embedded_dims = EMBED_DIMS,
-                feed_forward_dims = [128, 64, 32])(x)
+                feed_forward_dims = [128, EMBED_DIMS])(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.3)(x)
