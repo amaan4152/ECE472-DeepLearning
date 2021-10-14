@@ -82,7 +82,7 @@ def ResNet_N(doc_size, max_len, layers, classes):
 
     # model
     x = Embedding(input_dim = doc_size,
-                  output_dim = 4)(x)
+                  output_dim = 100)(x)
     x = Conv1D(
         filter_depth,
         kernel_size=2,

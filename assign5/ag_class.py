@@ -1,7 +1,8 @@
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.python.keras.layers.pooling import GlobalAveragePooling1D
 from tensorflow.python.keras.utils.np_utils import to_categorical
-from tensorflow.keras import Sequential
+from tensorflow.keras import Sequential, Model
 from tensorflow.keras.layers import Input, Embedding, Conv1D, MaxPooling1D, Flatten, Dense, SpatialDropout1D, Dropout, LSTM, SimpleRNN, GRU
 from tensorflow.keras import regularizers
 import numpy as np
@@ -10,9 +11,11 @@ import re
 from parser import CLI_Parser
 from parser import Parser
 from resnet1D import ResNet_N
+from encoder import Encoder, PositionalEncoder
 
 BATCH_SIZE = 256
 EPOCHS = 10
+EMBED_DIMS = 32
 
 # takes in pandas dataframe of text data
 # https://medium.com/@saitejaponugoti/nlp-natural-language-processing-with-tensorflow-b2751aa8c460
@@ -45,10 +48,10 @@ def main():
     train_data, train_labels, train_size, max_len, test_data, test_labels = text_processing(train, test)
     STEPS = 0.8 * train_data.shape[0] // BATCH_SIZE
 
-    model = ResNet_N(doc_size = train_size,
+    """model = ResNet_N(doc_size = train_size,
                      max_len = max_len,
                      layers = [2, 2, 2, 2],
-                     classes = 4)
+                     classes = 4)"""
     """
     model = Sequential()
     model.add(Embedding(input_dim = train_size,
@@ -76,6 +79,22 @@ def main():
     model.add(Dense(units = 4,
               activation = 'softmax'))
     """
+
+    input = Input(max_len)
+    x = PositionalEncoder(vocab_size = train_size,
+                          max_len = max_len, 
+                          embedded_dims = EMBED_DIMS)(input)
+    x = Encoder(num_heads = 2,
+                embedded_dims = EMBED_DIMS,
+                feed_forward_dims = [128, 64, 32])(x)
+    x = GlobalAveragePooling1D()(x)
+    x = Flatten()(x)
+    x = Dropout(0.3)(x)
+    x = Dense(10, activation='elu')(x)
+    x = Dropout(0.1)(x)
+    x = Dense(4, activation='softmax')
+
+    model = Model(inputs=input, outputs=x)
     model.summary()
 
     # compile and fit
