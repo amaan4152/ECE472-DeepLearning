@@ -73,16 +73,16 @@ def main():
     x = PositionalEncoder(vocab_size = train_size,
                           max_len = max_len, 
                           embedded_dims = EMBED_DIMS)(input)
+    x = LSTM(25)(x)
     x = SpatialDropout1D(0.8)(x)
     x = Conv1D(filters = 512,
                kernel_size = 2,
                activation = 'elu',
                kernel_regularizer = regularizers.l2(0.001))(x)
-    x = SpatialDropout1D(0.5)(x)
     x = GlobalAveragePooling1D()(x)
     x = Flatten()(x)
     x = Dropout(0.5)(x)
-    x = Dense(1000, activation='elu', kernel_regularizer = regularizers.l2(0.0001), kernel_initializer = 'he_normal')(x)
+    x = Dense(1000, activation='elu', kernel_regularizer = regularizers.l2(0.0001))(x)
     x = Dropout(0.3)(x)
     x = Dense(4, activation='softmax')(x)
 
