@@ -92,7 +92,7 @@ def main():
     x = Dropout(0.3)(x)
     x = Dense(10, activation='elu')(x)
     x = Dropout(0.1)(x)
-    x = Dense(4, activation='softmax')
+    x = Dense(4, activation='softmax')(x)
 
     model = Model(inputs=input, outputs=x)
     model.summary()
