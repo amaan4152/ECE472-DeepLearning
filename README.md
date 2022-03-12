@@ -7,3 +7,12 @@ that have been implemented are:
  - Multilayer Perceptron 
  - ResNets
  - Convolutional Neural Network (CNN)
+
+Applied techniques:
+
+ - Batch normalization 
+ - Adam optimization algorithm
+ - He-Normal Initialization
+ - Dropout and sparse dropout
+ - Learning rate scheduler
+ - Early stopping
